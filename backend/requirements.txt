@@ -1,0 +1,13 @@
+SQLAlchemy[asyncio]
+asyncpg
+pydantic
+fastapi
+uvicorn[standard]
+python-multipart
+passlib~=1.7.4
+python-jose[cryptography]
+bcrypt
+aiopath
+aiofiles
+Levenshtein
+
