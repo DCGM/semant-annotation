@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
     name: 'annotation_tasks',
     path: '/annotation_tasks/',
     component: () => import('src/layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('src/pages/UsersPage.vue') }],
+    children: [{ path: '', component: () => import('src/pages/TaskPage.vue') }],
     meta: { requiresAuth: true }
   },
   {

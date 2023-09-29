@@ -14,8 +14,10 @@ from typing import List
 async def get_all(db: AsyncSession, model_class: model.Base, table: model.Base, limit: int = 1000) -> List[model.Base]:
     try:
         async with db.begin():
-            db_objects = await db.scalars(select(table).order_by(table.created_date.desc()).limit(limit))
-            return [model_class.model_validate(obj) for obj in db_objects.all()]
+            db_objects = select(table).order_by(table.created_date.desc()).limit(limit)
+            db_objects = await db.execute(db_objects)
+            db_objects = db_objects.unique().scalars()
+            return [model_class.model_validate(obj) for obj in db_objects]
     except exc.SQLAlchemyError as e:
         logging.error(str(e))
         raise DBError(f'Failed fetching objects from database.')
@@ -24,8 +26,10 @@ async def get_all(db: AsyncSession, model_class: model.Base, table: model.Base, 
 async def get(db: AsyncSession, model_class: model.Base, table: model.Base, id: UUID) -> model.Base:
     try:
         async with db.begin():
-            db_obj = await db.scalar(select(table).where(table.id == id))
-            return model_class.model_validate(db_obj)
+            db_object = select(table).where(table.id == id)
+            db_object = await db.execute(db_object)
+            db_object = db_object.unique().scalar()
+            return model_class.model_validate(db_object)
     except exc.SQLAlchemyError as e:
         logging.error(str(e))
         raise DBError(f'Failed fetching object from database.')
