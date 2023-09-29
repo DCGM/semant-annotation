@@ -18,7 +18,8 @@ axios.defaults.withCredentials = true
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create({ baseURL: process.env.BACKEND_URL ? process.env.BACKEND_URL + '/api' : 'http://localhost:8000/api' })
+const apiURL = process.env.BACKEND_URL ? process.env.BACKEND_URL + '/api' : 'http://localhost:8000/api'
+const api = axios.create({ baseURL: apiURL })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -61,4 +62,4 @@ export default boot(({ app }) => {
     })
 })
 
-export { api }
+export { api, apiURL }

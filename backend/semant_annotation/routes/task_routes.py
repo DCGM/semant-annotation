@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import Depends
+from fastapi import Depends, UploadFile, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,7 +11,15 @@ from semant_annotation.db import get_async_session, crud_general, crud_task
 from semant_annotation.schemas import base_objects
 from semant_annotation.schemas.auth_objects import TokenData
 from semant_annotation.db import model
-from uuid import UUID
+from semant_annotation.db.database import DBError
+from uuid import UUID, uuid4
+import os
+import numpy as np
+import cv2
+import aiofiles
+import aiofiles.os
+import json
+from semant_annotation.config import config
 
 
 @task_route.get("/task", response_model=List[base_objects.AnnotationTask], tags=["Task"])
@@ -86,3 +94,43 @@ async def update_task_instance_result(task_instance_result: base_objects.Annotat
     await crud_general.update_obj(db, task_instance_result, model.AnnotationTaskResult)
 
 
+async def get_image_path(image_id: UUID, task_id: UUID):
+    path = os.path.join(config.UPLOADED_IMAGES_FOLDER, str(task_id))
+    await aiofiles.os.makedirs(path, exist_ok=True)
+    return os.path.join(path, (str(image_id) + '.jpg'))
+
+
+@task_route.post("/image/{task_id}", tags=["Task"])
+async def upload_image(task_id: UUID, file: UploadFile,
+                       user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    if 'image' not in file.content_type:
+        raise HTTPException(status_code=400, detail=f"Unsuported file type - only images are supported.")
+
+    try:
+        raw_input = file.file.read()
+        contents = np.asarray(bytearray(raw_input), dtype="uint8")
+        image = cv2.imdecode(contents, -1)
+        if image is None:
+            raise HTTPException(status_code=400, detail="Failed to decode/open image.")
+
+        instance_id = uuid4()
+
+        write_path = await get_image_path(image_id=instance_id, task_id=task_id)
+        async with aiofiles.open(write_path, mode='wb') as f:
+            await f.write(raw_input)
+
+        task_instance = base_objects.AnnotationTaskInstanceUpdate(
+            id=instance_id, annotation_task_id=task_id, image=write_path, text='', active=True,
+            instance_metadata=json.dumps({'type': 'image', 'original_filename': file.filename}))
+
+        await crud_general.new(db, task_instance, model.AnnotationTaskInstance)
+
+    except DBError as e:
+        image_path = await get_image_path(image_id=instance_id, task_id=task_id)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+        raise HTTPException(status_code=400, detail=f"Failed to upload image and add to dataset. {str(e)}")
+    finally:
+        file.file.close()
+
+    return {"message": f"Successfully uploaded {file.filename}"}

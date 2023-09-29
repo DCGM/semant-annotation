@@ -10,4 +10,6 @@ bcrypt
 aiopath
 aiofiles
 Levenshtein
+numpy
+opencv-python
 

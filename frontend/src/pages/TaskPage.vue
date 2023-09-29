@@ -33,12 +33,15 @@
         <q-card-actions align="right">
           <q-btn flat label="Annotate" color="primary" @click="annotate(task)" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
+            flat label="Upload images" color="primary" @click="uploadImages(task)" />
+          <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Edit" color="primary" @click="edit(task)" />
         </q-card-actions>
       </q-card>
     </div>
     <CreateAnnotationTaskDialog v-model="addTaskDialog" @refreshTasks="loadTasks" />
     <EditAnnotationTaskDialog v-model="editTaskDialog" :task="selectedTask" @refreshTasks="loadTasks" />
+    <UploadImagesDialog v-if="selectedTask" v-model="uploadImagesDialog" :taskId="selectedTask.id" />
   </q-page>
 </template>
 
@@ -50,6 +53,7 @@ import { actionNotification, successNotification } from 'src/utils/notification'
 import { AnnotationTask } from 'src/models'
 import CreateAnnotationTaskDialog from 'src/components/annotations/CreateAnnotationTaskDialog.vue'
 import EditAnnotationTaskDialog from 'src/components/annotations/EditAnnotationTaskDialog.vue'
+import UploadImagesDialog from 'src/components/annotations/UploadImagesDialog.vue'
 import { useErrorStore } from 'src/stores/error'
 
 const errorStore = useErrorStore()
@@ -57,9 +61,14 @@ const errorStore = useErrorStore()
 const userStore = useUserStore()
 const addTaskDialog = ref(false)
 const editTaskDialog = ref(false)
+const uploadImagesDialog = ref(false)
 const annotationTasks = ref(Array<AnnotationTask>())
 const selectedTask = ref<AnnotationTask | null>(null)
 
+function uploadImages (task: AnnotationTask) {
+  selectedTask.value = task
+  uploadImagesDialog.value = true
+}
 
 function edit (task: AnnotationTask) {
   selectedTask.value = task
