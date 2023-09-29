@@ -113,7 +113,7 @@ async def add_user(db: AsyncSession, user: User, password: str):
     await crud_user.add_user(db, UserInDB(**data))
 
 
-@authentication_route.post("/token", response_model=Token)
+@authentication_route.post("/token", response_model=Token, tags=["Authentication"])
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_async_session)):
     logging.error(f'{form_data.username}')
     user = await authenticate_user(db, form_data.username, form_data.password)
@@ -133,7 +133,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return response
 
 
-@authentication_route.post("/token/renew", response_model=Token)
+@authentication_route.post("/token/renew", response_model=Token, tags=["Authentication"])
 async def renew_access_token(user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
     user: UserInDB = await crud_user.get_user_by_id(db, user_token.user_id)
     if user.disabled:
@@ -153,6 +153,6 @@ async def renew_access_token(user_token: TokenData = Depends(get_current_user), 
     return response
 
 
-@authentication_route.get("/me", response_model=User)
+@authentication_route.get("/me", response_model=User, tags=["Authentication"])
 async def read_users_me(user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
     return await crud_user.get_user_by_id(db, user_token.user_id)

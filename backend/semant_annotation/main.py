@@ -7,11 +7,28 @@ from fastapi.staticfiles import StaticFiles
 
 from semant_annotation.config import config
 from semant_annotation.db import init_db, DBError
-from semant_annotation.routes import user_route, news_route
+from semant_annotation.routes import user_route, news_route, task_route
 from semant_annotation.authentication import authentication_route
 
 
 tags_metadata = [
+    {
+        "name": "User",
+        "description": "",
+    },
+    {
+        "name": "News",
+        "description": "",
+    },
+    {
+        "name": "Task",
+        "description": "",
+    },
+    {
+        "name": "Authentication",
+        "description": "",
+    }
+
 ]
 
 app = FastAPI(openapi_tags=tags_metadata)
@@ -26,6 +43,7 @@ app.include_router(user_route, prefix="/api/user")
 app.include_router(authentication_route, prefix="/api")
 app.include_router(authentication_route, prefix="")
 app.include_router(news_route, prefix="/api/news")
+app.include_router(task_route, prefix="/api/task")
 
 
 @app.exception_handler(DBError)
