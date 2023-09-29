@@ -26,9 +26,9 @@ async def new_task(task: base_objects.AnnotationTaskUpdate,
 
 
 @task_route.put("/task", tags=["Task"])
-async def update_task(task: base_objects.AnnotationTask,
+async def update_task(task: base_objects.AnnotationTaskUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.update(db, task, model.AnnotationTask)
+    await crud_general.update_obj(db, task, model.AnnotationTask)
 
 
 @task_route.post("/subtask", tags=["Task"])
@@ -40,7 +40,7 @@ async def new_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
 @task_route.put("/subtask", tags=["Task"])
 async def update_subtask(subtask: base_objects.AnnotationSubtask,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.update(db, subtask, model.AnnotationSubtask)
+    await crud_general.update_obj(db, subtask, model.AnnotationSubtask)
 
 
 @task_route.post("/task_instance", tags=["Task"])
@@ -52,7 +52,7 @@ async def new_task_instance(task_instance: base_objects.AnnotationTaskInstanceUp
 @task_route.put("/task_instance", tags=["Task"])
 async def update_task_instance(task_instance: base_objects.AnnotationTaskInstanceUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.update(db, task_instance, model.AnnotationTaskInstance)
+    await crud_general.update_obj(db, task_instance, model.AnnotationTaskInstance)
 
 
 @task_route.get("/task_instance_random/:task_id/:result_count", response_model=List[base_objects.AnnotationTaskInstance], tags=["Task"])
@@ -76,6 +76,6 @@ async def new_task_instance_result(task_instance_result: base_objects.Annotation
 @task_route.put("/task_instance_result", tags=["Task"])
 async def update_task_instance_result(task_instance_result: base_objects.AnnotationTaskResultUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.update(db, task_instance_result, model.AnnotationTaskResult)
+    await crud_general.update_obj(db, task_instance_result, model.AnnotationTaskResult)
 
 

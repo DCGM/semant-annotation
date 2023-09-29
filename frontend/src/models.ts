@@ -39,17 +39,17 @@ export interface AnnotationSubtask extends AnnotationSubtaskUpdate {
   last_change: string
 }
 
-export interface AnnotationTaskUpdate {
-  id: string
-  name: string
-  description: string
-  active: boolean
+export class AnnotationTaskUpdate {
+  id = ''
+  name = ''
+  description = ''
+  active = false
 }
 
-export interface AnnotationTask extends AnnotationTaskUpdate {
-  created_date: string
-  last_change: string
-  subtasks: AnnotationSubtaskUpdate[]
+export class AnnotationTask extends AnnotationTaskUpdate {
+  created_date = ''
+  last_change = ''
+  subtasks: AnnotationSubtaskUpdate[] = []
 }
 
 export interface AnnotationTaskInstanceUpdate {

@@ -13,6 +13,7 @@
         <q-card-section  >
           <div class="text-h6">
             {{ task.name }}
+            <span v-if="userStore.user && userStore.user.trusted && !task.active" class="text-primary">(INACTIVE)</span>
           </div>
           <div class="text-subtitle2">
             <span class="text-weight-bold" v-for="subtask in task.subtasks" :key="subtask.id">
@@ -39,6 +40,7 @@
       </q-card>
     </div>
     <CreateAnnotationTaskDialog v-model="addTaskDialog" @refreshTasks="loadTasks" />
+    <EditAnnotationTaskDialog v-model="editTaskDialog" :task="selectedTask" @refreshTasks="loadTasks" />
   </q-page>
 </template>
 
@@ -49,6 +51,7 @@ import { api } from 'src/boot/axios'
 import { actionNotification, successNotification } from 'src/utils/notification'
 import { AnnotationTask } from 'src/models'
 import CreateAnnotationTaskDialog from 'src/components/annotations/CreateAnnotationTaskDialog.vue'
+import EditAnnotationTaskDialog from 'src/components/annotations/EditAnnotationTaskDialog.vue'
 import { useErrorStore } from 'src/stores/error'
 
 const errorStore = useErrorStore()

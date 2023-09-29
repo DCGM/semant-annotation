@@ -46,15 +46,14 @@ async def new(db: AsyncSession, obj: model.Base, table: model.Base):
         raise DBError(f'Failed fetching object from database.')
 
 
-async def update(db: AsyncSession, obj: model.Base, table: model.Base):
+async def update_obj(db: AsyncSession, obj: model.Base, table: model.Base):
     try:
         async with db.begin():
             data = obj.model_dump(exclude={'id'})
             # add last_change with current timestamp
-            data['last_change'] = datetime.now()
+            data['last_change'] = datetime.datetime.utcnow()
 
-            stm = (update(table).where(table.id == obj.id) \
-                    .values(data))
+            stm = (update(table).where(table.id == obj.id).values(data))
             await db.execute(stm)
     except exc.SQLAlchemyError as e:
         logging.error(str(e))

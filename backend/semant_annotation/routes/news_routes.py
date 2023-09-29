@@ -28,4 +28,4 @@ async def new_news(news: base_objects.NewsUpdate,
 @news_route.put("/", tags=["News"])
 async def update_news(news: base_objects.News,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.update(db, news, model.News)
+    await crud_general.update_obj(db, news, model.News)
