@@ -135,7 +135,7 @@ defineComponent({
 
 interface Props {
   modelValue: boolean
-  task: AnnotationTask
+  task: AnnotationTask | null
 }
 
 const props = defineProps<Props>()

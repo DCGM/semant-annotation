@@ -24,8 +24,7 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <div class="text-subtitle2">
-            {{ task.description }}
+          <div class="text-subtitle2" :innerHTML="task.description">
           </div>
         </q-card-section>
 
