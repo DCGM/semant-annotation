@@ -106,7 +106,11 @@ async def get_current_admin(user_token: TokenData = Depends(get_current_user)):
 
 
 async def add_user(db: AsyncSession, user: User, password: str):
-    await crud_user.add_user(db, UserInDB(**user.model_dump(), hashed_password=get_password_hash(password)))
+    data = user.model_dump()
+    data["hashed_password"] = get_password_hash(password)
+    data["created_date"] = datetime.now()
+    data["last_change"] = data["created_date"]
+    await crud_user.add_user(db, UserInDB(**data))
 
 
 @authentication_route.post("/token", response_model=Token)

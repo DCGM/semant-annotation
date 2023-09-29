@@ -26,6 +26,8 @@ class UserWithPasswd(User):
 class UserInDB(User):
     hashed_password: str
     reset_password_token: Optional[str] = None
+    created_date: datetime
+    last_change: datetime
 
 
 class NewsUpdate(BaseModel):
@@ -36,11 +38,73 @@ class NewsUpdate(BaseModel):
     deleted: bool = False
     released_date: Union[datetime, None] = None
 
+
+class News(NewsUpdate):
+    created_date: datetime
+    last_change: datetime
+
     class Config:
         from_attributes = True
 
 
-class News(NewsUpdate):
+class AnnotationSubtaskUpdate(BaseModel):
+    id: UUID
+    annotation_task_id: UUID
+    name: str
+    description: str
+    active: bool = False
+
+
+class AnnotationSubtask(AnnotationSubtaskUpdate):
+    created_date: datetime
+    last_change: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AnnotationTaskUpdate(BaseModel):
+    id: UUID
+    name: str
+    description: str
+    active: bool = False
+
+
+class AnnotationTask(AnnotationTaskUpdate):
+    created_date: datetime
+    last_change: datetime
+    subtasks: List[AnnotationSubtaskUpdate] = []
+
+    class Config:
+        from_attributes = True
+
+
+class AnnotationTaskInstanceUpdate(BaseModel):
+    id: UUID
+    annotation_task_id: UUID
+    image: str
+    text: str
+    instance_metadata: str
+    active: bool
+
+
+class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
+    created_date: datetime
+    last_change: datetime
+    result_count: int = 0
+
+    class Config:
+        from_attributes = True
+
+
+class AnnotationTaskResultUpdate(BaseModel):
+    id: UUID
+    user_id: UUID
+    annotation_task_instance_id: UUID
+    result: str
+
+
+class AnnotationTaskResult(AnnotationTaskResultUpdate):
     created_date: datetime
     last_change: datetime
 

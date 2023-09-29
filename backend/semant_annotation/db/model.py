@@ -16,6 +16,8 @@ class User(Base):
     full_name: Mapped[str] = mapped_column(String(128), index=True)
     email: Mapped[str] = mapped_column(String(120), index=True, unique=True)
     institution: Mapped[Optional[str]] = mapped_column(String(300))
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
 
     trusted: Mapped[int]
     hashed_password: Mapped[str]
@@ -29,6 +31,7 @@ class News(Base):
     short: Mapped[str] = mapped_column(String(3000), nullable=False)
     content: Mapped[str] = mapped_column(nullable=False)
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     released_date: Mapped[datetime.datetime] = mapped_column(index=True, nullable=True)
     last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     deleted: Mapped[bool] = mapped_column(default=False, nullable=False)
@@ -39,7 +42,54 @@ class Messages(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     message: Mapped[str] = mapped_column(String(2048), nullable=False)
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     read: Mapped[bool] = mapped_column(default=False, nullable=False, index=True)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=False)
 
     user: Mapped['User'] = relationship()
+
+
+class AnnotationTask(Base):
+    __tablename__ = 'annotation_tasks'
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str]
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    active: Mapped[bool] = mapped_column(default=False, nullable=False)
+
+    subtasks: Mapped[List['AnnotationSubtask']] = relationship( viewonly=True, lazy='joined')
+
+
+class AnnotationSubtask(Base):
+    __tablename__ = 'annotation_subtasks'
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    annotation_task_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_tasks.id'), index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str]
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+
+
+class AnnotationTaskInstance(Base):
+    __tablename__ = 'annotation_task_instances'
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    annotation_task_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_tasks.id'), index=True, nullable=False)
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_send_send_to_user: Mapped[datetime.datetime] = mapped_column(index=True, nullable=True)
+    image: Mapped[str] = mapped_column(String, nullable=False)
+    text: Mapped[str] = mapped_column(String, nullable=False)
+    instance_metadata: Mapped[str] = mapped_column(String, nullable=False)
+    result_count: Mapped[int] = mapped_column(default=0, nullable=False)
+    active: Mapped[bool] = mapped_column(default=True, nullable=False)
+
+
+class AnnotationTaskResult(Base):
+    __tablename__ = 'annotation_task_results'
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=False)
+    annotation_task_instance_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_task_instances.id'), index=True, nullable=False)
+    result: Mapped[str]
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
