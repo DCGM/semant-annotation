@@ -6,7 +6,10 @@ from sqlalchemy.types import String
 from typing import List, Optional
 import uuid
 import datetime
+import random
 
+
+max_random_number = 1000000000
 
 class User(Base):
     __tablename__ = 'users'
@@ -83,6 +86,9 @@ class AnnotationTaskInstance(Base):
     instance_metadata: Mapped[str] = mapped_column(String, nullable=False)
     result_count: Mapped[int] = mapped_column(default=0, nullable=False)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
+
+    random_number: Mapped[int] = mapped_column(default=random.randint(0, max_random_number), nullable=False, index=True)
+
 
 
 class AnnotationTaskResult(Base):
