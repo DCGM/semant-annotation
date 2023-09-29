@@ -73,7 +73,7 @@ class AnnotationTaskUpdate(BaseModel):
 class AnnotationTask(AnnotationTaskUpdate):
     created_date: datetime
     last_change: datetime
-    subtasks: List[AnnotationSubtaskUpdate] = []
+    subtasks: List[AnnotationSubtask] = []
 
     class Config:
         from_attributes = True

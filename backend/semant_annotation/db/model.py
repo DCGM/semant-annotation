@@ -70,6 +70,7 @@ class AnnotationSubtask(Base):
     annotation_task_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_tasks.id'), index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(300), nullable=False)
     description: Mapped[str]
+    active: Mapped[bool] = mapped_column(default=False, nullable=False)
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
 

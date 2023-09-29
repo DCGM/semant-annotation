@@ -11,12 +11,19 @@ from semant_annotation.db import get_async_session, crud_general, crud_task
 from semant_annotation.schemas import base_objects
 from semant_annotation.schemas.auth_objects import TokenData
 from semant_annotation.db import model
+from uuid import UUID
 
 
 @task_route.get("/task", response_model=List[base_objects.AnnotationTask], tags=["Task"])
 async def get_task(
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
     return await crud_general.get_all(db, base_objects.AnnotationTask, model.AnnotationTask)
+
+
+@task_route.get("/task/{task_id}", response_model=base_objects.AnnotationTask, tags=["Task"])
+async def get_task_by_id(task_id: UUID,
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+    return await crud_general.get(db, base_objects.AnnotationTask, model.AnnotationTask, task_id)
 
 
 @task_route.post("/task", tags=["Task"])
@@ -38,7 +45,7 @@ async def new_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
 
 
 @task_route.put("/subtask", tags=["Task"])
-async def update_subtask(subtask: base_objects.AnnotationSubtask,
+async def update_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
     await crud_general.update_obj(db, subtask, model.AnnotationSubtask)
 

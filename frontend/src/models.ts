@@ -26,17 +26,17 @@ export class News extends NewsUpdate {
   last_change = ''
 }
 
-export interface AnnotationSubtaskUpdate {
-  id: string
-  annotation_task_id: string
-  name: string
-  description: string
-  active: boolean
+export class AnnotationSubtaskUpdate {
+  id = ''
+  annotation_task_id  = ''
+  name = ''
+  description = ''
+  active = false
 }
 
-export interface AnnotationSubtask extends AnnotationSubtaskUpdate {
-  created_date: string
-  last_change: string
+export class AnnotationSubtask extends AnnotationSubtaskUpdate {
+  created_date = ''
+  last_change = ''
 }
 
 export class AnnotationTaskUpdate {

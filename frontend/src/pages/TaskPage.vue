@@ -16,16 +16,15 @@
             <span v-if="userStore.user && userStore.user.trusted && !task.active" class="text-primary">(INACTIVE)</span>
           </div>
           <div class="text-subtitle2">
-            <span class="text-weight-bold" v-for="subtask in task.subtasks" :key="subtask.id">
-              {{ subtask.name }}
+            <span v-for="subtask in task.subtasks" :key="subtask.id">
+              <span v-if="subtask.active" class="q-pr-md">
+                {{ subtask.name }}
+              </span>
             </span>
           </div>
         </q-card-section>
         <q-card-section>
           <div class="text-subtitle2">
-            <span class="text-weight-bold">
-              Description:
-            </span>
             {{ task.description }}
           </div>
         </q-card-section>

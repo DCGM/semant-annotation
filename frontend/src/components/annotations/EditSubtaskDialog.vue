@@ -3,7 +3,8 @@
     @keydown.stop="dialogKeyhandler" no-backdrop-dismiss no-shake>
     <q-card class="q-pa-lg shadow-1" style="width: 800px; max-width: 90vw;">
       <q-card-section>
-        <div class="text-h5">New annotation task</div>
+        <div v-if="!props.subtask" class="text-h5">New annotation task</div>
+        <div v-if="props.subtask" class="text-h5">Edit annotation task</div>
       </q-card-section>
       <q-card-section>
         <q-form @submit="onSubmit">
@@ -19,89 +20,32 @@
             @click="emit('update:modelValue', false)" :disable="disable" />
         </q-form>
       </q-card-section>
-      <!-- list all subtasks -->
-      <q-card-section>
-        <div class="text-h6">Subtasks</div>
-        <q-list bordered separator>
-          <q-item v-for="subtask in sortedSubtasks" :key="subtask.id">
-            <q-item-section>
-              <q-item-label>{{ subtask.name }} <span v-if="!subtask.active" class="text-primary">(INACTIVE)</span> </q-item-label>
-            </q-item-section>
-
-            <q-item-section side>
-              <q-btn flat dense @click="editSubtask(subtask)" label="Edit"/>
-            </q-item-section>
-          </q-item>
-        </q-list>
-        <q-btn unelevated color="primary" size="lg" class="full-width q-mt-md" label="Add subtask" @click="newSubtask()" />
-      </q-card-section>
-
     </q-card>
-    <EditSubtaskDialog v-model="editSubtaskDialog" :subtask="selectedSubtask" @refreshSubtasks="loadSubtasks" :annotationTaskId="localTask.id" />
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { AnnotationTaskUpdate, AnnotationTask, AnnotationSubtask } from 'src/models'
+import { AnnotationSubtaskUpdate, AnnotationSubtask } from 'src/models'
 import { uid, useQuasar, Loading } from 'quasar'
 import { defineComponent, ref, computed, watch } from 'vue'
 import { useErrorStore } from 'src/stores/error'
 import { actionNotification, successNotification } from 'src/utils/notification'
 import { api } from 'src/boot/axios'
-import EditSubtaskDialog from './EditSubtaskDialog.vue'
 
 const errorStore = useErrorStore()
 const quasar = useQuasar()
 
-const localTask = ref(new AnnotationTask())
+const localTask = ref(new AnnotationSubtask())
 const disable = ref(false)
 
-const editSubtaskDialog = ref(false)
-const selectedSubtask = ref<AnnotationSubtask | null>(null)
-
-
-function editSubtask (subtask: AnnotationSubtask) {
-  selectedSubtask.value = subtask
-  editSubtaskDialog.value = true
-}
-
-function newSubtask () {
-  selectedSubtask.value = null
-  editSubtaskDialog.value = true
-}
-
-const sortedSubtasks = computed(() => {
-  const subtasks = JSON.parse(JSON.stringify(localTask.value.subtasks))
-  subtasks.sort((a: AnnotationSubtask, b: AnnotationSubtask) => {
-    if (a.created_date < b.created_date) {
-      return -1
-    } else if (a.created_date > b.created_date) {
-      return 1
-    } else {
-      return 0
-    }
-  })
-  return subtasks
-})
-
-async function loadSubtasks () {
-  try {
-    const dismiss = actionNotification('Reloading sub tasks.')
-    const response: AnnotationTask = await api.get(`/task/task/${localTask.value.id}`).then(r => r.data)
-    emit('refreshTasks')
-    localTask.value.subtasks = response.subtasks
-    dismiss()
-  } catch (error) {
-    errorStore.reportError('Error', `Failed to load subtasks for task ${localTask.value.name}.`, error)
-  }
-}
 
 async function onShow () {
-  if (props.task) {
-    localTask.value = JSON.parse(JSON.stringify(props.task))
+  if (props.subtask) {
+    localTask.value = JSON.parse(JSON.stringify(props.subtask))
   } else {
-    errorStore.reportError('Error', 'No task provided.', new Error('No task provided.'))
-    emit('update:modelValue', false)
+    localTask.value = new AnnotationSubtask()
+    localTask.value.id = uid()
+    localTask.value.annotation_task_id = props.annotationTaskId
   }
 }
 
@@ -109,17 +53,23 @@ async function onSubmit () {
   disable.value = true
   Loading.show({ delay: 300 })
   try {
-    const taskUpdate: AnnotationTaskUpdate = {
+    const taskUpdate: AnnotationSubtaskUpdate = {
       id: localTask.value.id,
+      annotation_task_id: localTask.value.annotation_task_id,
       name: localTask.value.name,
       description: localTask.value.description,
       active: localTask.value.active
     }
-    await api.put('/task/task', taskUpdate)
-    successNotification(`Updated annotation task: ${localTask.value}.`)
-    emit('refreshTasks')
+    if( !props.subtask ) {
+      await api.post('/task/subtask', taskUpdate)
+      successNotification(`Created annotation sub task: ${localTask.value.name}.`)
+    } else {
+      await api.put('/task/subtask', taskUpdate)
+      successNotification(`Updated annotation sub task: ${localTask.value.name}.`)
+    }
+    emit('refreshSubtasks')
     emit('update:modelValue', false)
-    localTask.value = new AnnotationTask()
+    localTask.value = new AnnotationSubtask()
   } catch (error) {
     errorStore.reportError('Error', `Failed to update annotation task ${localTask.value.name}.`, error)
   } finally {
@@ -129,19 +79,19 @@ async function onSubmit () {
 }
 
 defineComponent({
-  name: 'EditAnnotationTaskDialog'
+  name: 'EditAnnotationSubtaskDialog'
 })
 
 
 interface Props {
   modelValue: boolean
-  task: AnnotationTask
+  annotationTaskId: string
+  subtask: AnnotationSubtask | null
 }
 
 const props = defineProps<Props>()
 
-
-const emit = defineEmits(['update:modelValue', 'refreshTasks'])
+const emit = defineEmits(['update:modelValue', 'refreshSubtasks'])
 
 function dialogKeyhandler (event: KeyboardEvent) {
   if (event.key === 'Escape') {
