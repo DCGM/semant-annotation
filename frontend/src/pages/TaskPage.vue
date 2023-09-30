@@ -37,6 +37,8 @@
           <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Upload images" color="secondary" @click="uploadImages(task)" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
+            flat label="Add text" color="secondary" @click="addTextInstanceDialog = true; selectedTask = task" />
+          <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Edit" color="secondary" @click="edit(task)" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Delete" color="negative" @click="openDeleteDialog(task)" />
@@ -47,6 +49,7 @@
     <EditAnnotationTaskDialog v-model="editTaskDialog" :task="selectedTask" @refreshTasks="loadTasks" />
     <UploadImagesDialog v-if="selectedTask" v-model="uploadImagesDialog" :taskId="selectedTask.id" />
     <TaskInfo v-if="selectedTask" v-model="taskInfoDialog" :task="selectedTask" />
+    <AddTextInstanceDialog v-if="selectedTask" v-model="addTextInstanceDialog" :task="selectedTask" />
     <!-- Simple delete dialog -->
     <q-dialog v-model="deleteDialog">
       <q-card class="q-pa-md">
@@ -75,6 +78,7 @@ import CreateAnnotationTaskDialog from 'src/components/annotations/CreateAnnotat
 import EditAnnotationTaskDialog from 'src/components/annotations/EditAnnotationTaskDialog.vue'
 import UploadImagesDialog from 'src/components/annotations/UploadImagesDialog.vue'
 import TaskInfo from 'src/components/annotations/TaskInfo.vue'
+import AddTextInstanceDialog from 'src/components/annotations/AddTextInstanceDialog.vue'
 import { useErrorStore } from 'src/stores/error'
 
 const errorStore = useErrorStore()
@@ -86,6 +90,7 @@ const editTaskDialog = ref(false)
 const uploadImagesDialog = ref(false)
 const taskInfoDialog = ref(false)
 const deleteDialog = ref(false)
+const addTextInstanceDialog = ref(false)
 const annotationTasks = ref(Array<AnnotationTask>())
 const selectedTask = ref<AnnotationTask | null>(null)
 
