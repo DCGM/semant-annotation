@@ -60,7 +60,7 @@ async def update_obj(db: AsyncSession, obj: model.Base, table: model.Base):
         raise DBError(f'Failed updating object in database.')
 
 
-async def delete(db: AsyncSession, id: UUID, table: model.Base):
+async def delete_obj(db: AsyncSession, id: UUID, table: model.Base):
     try:
         async with db.begin():
             stm = (delete(table).where(table.id == id))

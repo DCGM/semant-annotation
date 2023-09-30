@@ -46,6 +46,12 @@ async def update_task(task: base_objects.AnnotationTaskUpdate,
     await crud_general.update_obj(db, task, model.AnnotationTask)
 
 
+@task_route.delete("/task/{task_id}", tags=["Task"])
+async def delete_task(task_id: UUID,
+        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    await crud_general.delete_obj(db, task_id, model.AnnotationTask)
+
+
 @task_route.post("/subtask", tags=["Task"])
 async def new_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):

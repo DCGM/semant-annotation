@@ -8,8 +8,8 @@
         <q-btn v-if="userStore.user && userStore.user.trusted" color="primary" label="Add task" @click="addTaskDialog = true" />
       </q-toolbar>
     </q-page-sticky>
-    <div class="q-pa-md">
-      <q-card class="q-pa-md" v-for="task in annotationTasks" :key="task.id">
+    <div class="row q-gutter-md q-mt-md q-px-md">
+      <q-card class="q-pa-md" v-for="task in tasksToShow" :key="task.id" style="max-width: 600px; width: 100%;">
         <q-card-section  >
           <div class="text-h6">
             {{ task.name }}
@@ -24,24 +24,43 @@
           </div>
         </q-card-section>
         <q-card-section>
-          <div class="text-subtitle2" :innerHTML="task.description">
-          </div>
+          <q-scroll-area style="height: 200px; ">
+            <div class="text-subtitle2" :innerHTML="task.description" />
+          </q-scroll-area>
         </q-card-section>
 
-        <q-separator dark />
+        <q-separator />
 
         <q-card-actions align="right">
           <q-btn flat label="Annotate" color="primary" @click="annotate(task)" />
+          <q-btn flat label="Info" color="primary" @click="taskInfoDialog = true; selectedTask = task" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
-            flat label="Upload images" color="primary" @click="uploadImages(task)" />
+            flat label="Upload images" color="secondary" @click="uploadImages(task)" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
-            flat label="Edit" color="primary" @click="edit(task)" />
+            flat label="Edit" color="secondary" @click="edit(task)" />
+          <q-btn v-if="userStore.user && userStore.user.trusted"
+            flat label="Delete" color="negative" @click="openDeleteDialog(task)" />
         </q-card-actions>
       </q-card>
     </div>
     <CreateAnnotationTaskDialog v-model="addTaskDialog" @refreshTasks="loadTasks" />
     <EditAnnotationTaskDialog v-model="editTaskDialog" :task="selectedTask" @refreshTasks="loadTasks" />
     <UploadImagesDialog v-if="selectedTask" v-model="uploadImagesDialog" :taskId="selectedTask.id" />
+    <TaskInfo v-if="selectedTask" v-model="taskInfoDialog" :task="selectedTask" />
+    <!-- Simple delete dialog -->
+    <q-dialog v-model="deleteDialog">
+      <q-card class="q-pa-md">
+        <q-card-section>
+          <div class="text-h6">Delete task "{{ selectedTask?.name }}"</div>
+          <div class="text-subtitle2">Are you sure you want to delete this task?</div>
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right" class="q-mt-sm">
+          <q-btn label="Cancel action" color="primary" v-model="deleteDialog" />
+          <q-btn v-if="selectedTask" label="Confirm Delete" color="negative" @click="deleteTask(selectedTask)" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -54,6 +73,7 @@ import { AnnotationTask } from 'src/models'
 import CreateAnnotationTaskDialog from 'src/components/annotations/CreateAnnotationTaskDialog.vue'
 import EditAnnotationTaskDialog from 'src/components/annotations/EditAnnotationTaskDialog.vue'
 import UploadImagesDialog from 'src/components/annotations/UploadImagesDialog.vue'
+import TaskInfo from 'src/components/annotations/TaskInfo.vue'
 import { useErrorStore } from 'src/stores/error'
 
 const errorStore = useErrorStore()
@@ -62,6 +82,8 @@ const userStore = useUserStore()
 const addTaskDialog = ref(false)
 const editTaskDialog = ref(false)
 const uploadImagesDialog = ref(false)
+const taskInfoDialog = ref(false)
+const deleteDialog = ref(false)
 const annotationTasks = ref(Array<AnnotationTask>())
 const selectedTask = ref<AnnotationTask | null>(null)
 
@@ -75,10 +97,36 @@ function edit (task: AnnotationTask) {
   editTaskDialog.value = true
 }
 
+function openDeleteDialog (task: AnnotationTask) {
+  selectedTask.value = task
+  deleteDialog.value = true
+}
+
 function annotate(task: AnnotationTask) {
   console.log('ANNOTATE ', task)
 }
 
+async function deleteTask(task: AnnotationTask) {
+  deleteDialog.value = false
+  const dismiss = actionNotification('Deleting task ' + task.name)
+  try{
+    await api.delete('/task/task/' + task.id)
+    successNotification('Deleted task ' + task.name)
+    loadTasks()
+  } catch (error) {
+    errorStore.reportError('Error', 'Failed to delete task ' + task.name, error)
+  } finally{
+    dismiss()
+  }
+}
+
+const tasksToShow = computed(() => {
+  if (userStore.user && userStore.user.trusted) {
+    return annotationTasks.value
+  } else {
+    return annotationTasks.value.filter(task => task.active)
+  }
+})
 
 
 async function loadTasks () {
