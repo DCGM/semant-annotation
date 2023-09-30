@@ -77,10 +77,10 @@ async def update_task_instance(task_instance: base_objects.AnnotationTaskInstanc
     await crud_general.update_obj(db, task_instance, model.AnnotationTaskInstance)
 
 
-@task_route.get("/task_instance_random/{task_id}/{result_count}", response_model=base_objects.AnnotationTaskInstance, tags=["Task"])
-async def get_task_instance(task_id: UUID, result_count: int,
+@task_route.get("/task_instance_random/{task_id}/{result_count_new}/{result_count_correction}", response_model=base_objects.AnnotationTaskInstance, tags=["Task"])
+async def get_task_instance(task_id: UUID, result_count_new: int, result_count_correction: int,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
-    task = await crud_task.get_task_instance_random(db, task_id, result_count)
+    task = await crud_task.get_task_instance_random(db, task_id, result_count_new, result_count_correction)
     if task is None:
         raise HTTPException(status_code=404, detail="No task instance available.")
     return task
@@ -94,8 +94,10 @@ async def get_task_instance(task_id: int,
 
 @task_route.post("/task_instance_result", tags=["Task"])
 async def new_task_instance_result(task_instance_result: base_objects.AnnotationTaskResultUpdate,
-        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    await crud_general.new(db, task_instance_result, model.AnnotationTaskResult)
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+    if not user_token.trusted_user:
+        task_instance_result.user_id = user_token.user_id
+    await crud_task.store_task_instance_result(db, task_instance_result)
 
 
 @task_route.put("/task_instance_result", tags=["Task"])

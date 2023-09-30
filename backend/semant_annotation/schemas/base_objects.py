@@ -6,6 +6,11 @@ from datetime import datetime
 import enum
 
 
+class AnnotationResultType(enum.Enum):
+    NEW = 'new'
+    CORRECTION = 'correction'
+
+
 class User(BaseModel):
     id: UUID
     username: str
@@ -102,6 +107,7 @@ class AnnotationTaskResultUpdate(BaseModel):
     user_id: UUID
     annotation_task_instance_id: UUID
     result: str
+    result_type: AnnotationResultType
 
 
 class AnnotationTaskResult(AnnotationTaskResultUpdate):

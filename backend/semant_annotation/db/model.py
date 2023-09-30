@@ -8,6 +8,7 @@ import uuid
 import datetime
 import random
 from functools import partial
+from semant_annotation.schemas import base_objects
 
 
 max_random_number = 1000000000
@@ -86,11 +87,15 @@ class AnnotationTaskInstance(Base):
     image: Mapped[str] = mapped_column(String, nullable=False)
     text: Mapped[str] = mapped_column(String, nullable=False)
     instance_metadata: Mapped[str] = mapped_column(String, nullable=False)
-    result_count: Mapped[int] = mapped_column(default=0, nullable=False)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
+    result_count_new: Mapped[int] = mapped_column(default=0, nullable=False)
+    result_count_correction: Mapped[int] = mapped_column(default=0, nullable=False)
+
 
     random_number: Mapped[int] = mapped_column(default=partial(random.randint, 0, max_random_number), nullable=False, index=True)
 
+
+#  Mapped[base_objects.WorkState] = mapped_column(default=base_objects.WorkState.NEW, nullable=False)
 
 
 class AnnotationTaskResult(Base):
@@ -99,5 +104,6 @@ class AnnotationTaskResult(Base):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=False)
     annotation_task_instance_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_task_instances.id'), index=True, nullable=False)
     result: Mapped[str]
+    result_type: Mapped[base_objects.AnnotationResultType] = mapped_column(nullable=False)
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
