@@ -72,6 +72,7 @@ export interface AnnotationTaskResultUpdate {
   user_id: string
   annotation_task_instance_id: string
   result: string
+  result_type: string
 }
 
 export interface AnnotationTaskResult extends AnnotationTaskResultUpdate {

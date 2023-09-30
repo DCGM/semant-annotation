@@ -106,7 +106,8 @@ async function submitResponse(){
       id: uid(),
       user_id: userStore.user.id,
       annotation_task_instance_id: taskInstance.value.id,
-      result: JSON.stringify(textResponses.value)
+      result: JSON.stringify(textResponses.value),
+      result_type: 'new'
     }
     await api.post('/task/task_instance_result', resultData)
     await getNextAnnotationTaskInstance()
@@ -141,7 +142,7 @@ async function getNextAnnotationTaskInstance() {
   Loading.show({ delay: 300 })
   try{
     // /api/task/task_instance_random/:task_id/:result_count
-    taskInstance.value = await api.get(`/task/task_instance_random/${route.params.task_id}/0`).then(response => response.data)
+    taskInstance.value = await api.get(`/task/task_instance_random/${route.params.task_id}/0/-1`).then(response => response.data)
     for(const subtask of annotationTask.value.subtasks) {
       if(subtask.active) {
         textResponses.value[subtask.id] = []
