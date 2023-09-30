@@ -49,7 +49,7 @@ export class AnnotationTaskUpdate {
 export class AnnotationTask extends AnnotationTaskUpdate {
   created_date = ''
   last_change = ''
-  subtasks: AnnotationSubtaskUpdate[] = []
+  subtasks: AnnotationSubtask[] = []
 }
 
 export interface AnnotationTaskInstanceUpdate {

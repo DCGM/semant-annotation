@@ -7,6 +7,7 @@ from typing import List, Optional
 import uuid
 import datetime
 import random
+from functools import partial
 
 
 max_random_number = 1000000000
@@ -88,7 +89,7 @@ class AnnotationTaskInstance(Base):
     result_count: Mapped[int] = mapped_column(default=0, nullable=False)
     active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    random_number: Mapped[int] = mapped_column(default=random.randint(0, max_random_number), nullable=False, index=True)
+    random_number: Mapped[int] = mapped_column(default=partial(random.randint, 0, max_random_number), nullable=False, index=True)
 
 
 

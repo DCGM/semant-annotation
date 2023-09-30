@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import exc, select, func
+from sqlalchemy import exc, select, or_
 from .database import DBError
 from . import model
 from semant_annotation.schemas import base_objects
@@ -9,10 +9,12 @@ from datetime import datetime, timedelta
 from uuid import UUID
 import random
 
+
 def base_select_random_instance(task_id: UUID, available_result_count: int, time_delta: timedelta, random_number: int, greater_or_equal: bool):
-    stmt = select(model.AnnotationTaskInstance).filter(model.AnnotationTaskInstance.task_id == task_id) \
+    stmt = select(model.AnnotationTaskInstance).filter(model.AnnotationTaskInstance.annotation_task_id == task_id) \
         .filter(model.AnnotationTaskInstance.result_count == available_result_count) \
-        .filter(model.AnnotationTaskInstance.last_send_send_to_user == None or model.AnnotationTaskInstance.last_send_send_to_user < datetime.now() - time_delta)
+        .filter(or_(model.AnnotationTaskInstance.last_send_send_to_user == None,
+                    model.AnnotationTaskInstance.last_send_send_to_user < datetime.now() - time_delta))
     if greater_or_equal:
         stmt = stmt.filter(model.AnnotationTaskInstance.random_number >= random_number)
     else:
@@ -34,7 +36,6 @@ async def get_task_instance_random(db: AsyncSession, task_id: UUID, available_re
         if not db_task_instance:
             return None
         db_task_instance.last_send_send_to_user = datetime.now()
-        await db.commit()
         return base_objects.AnnotationTaskInstance.model_validate(db_task_instance)
     except exc.SQLAlchemyError as e:
         logging.error(str(e))

@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import Depends, UploadFile, HTTPException
+from fastapi.responses import FileResponse
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -76,13 +77,16 @@ async def update_task_instance(task_instance: base_objects.AnnotationTaskInstanc
     await crud_general.update_obj(db, task_instance, model.AnnotationTaskInstance)
 
 
-@task_route.get("/task_instance_random/:task_id/:result_count", response_model=List[base_objects.AnnotationTaskInstance], tags=["Task"])
-async def get_task_instance(task_id: int, result_count: int,
+@task_route.get("/task_instance_random/{task_id}/{result_count}", response_model=base_objects.AnnotationTaskInstance, tags=["Task"])
+async def get_task_instance(task_id: UUID, result_count: int,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
-    return await crud_task.get_task_instance_random(db, task_id, result_count)
+    task = await crud_task.get_task_instance_random(db, task_id, result_count)
+    if task is None:
+        raise HTTPException(status_code=404, detail="No task instance available.")
+    return task
 
 
-@task_route.get("/task_instance/:task_id", response_model=List[base_objects.AnnotationTaskInstance], tags=["Task"])
+@task_route.get("/task_instance/{task_id}", response_model=List[base_objects.AnnotationTaskInstance], tags=["Task"])
 async def get_task_instance(task_id: int,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
     return await crud_task.get_task_instance(db, task_id)
@@ -100,15 +104,24 @@ async def update_task_instance_result(task_instance_result: base_objects.Annotat
     await crud_general.update_obj(db, task_instance_result, model.AnnotationTaskResult)
 
 
-async def get_image_path(image_id: UUID, task_id: UUID):
+async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
     path = os.path.join(config.UPLOADED_IMAGES_FOLDER, str(task_id))
-    await aiofiles.os.makedirs(path, exist_ok=True)
+    if make_dir:
+        await aiofiles.os.makedirs(path, exist_ok=True)
     return os.path.join(path, (str(image_id) + '.jpg'))
 
 
+@task_route.get("/image/{task_id}/{image_id}", tags=["Task"])
+async def get_image(task_id: UUID, image_id: UUID,
+        user_token: TokenData = Depends(get_current_user)):
+    path = await get_image_path(image_id=image_id, task_id=task_id, make_dir=False)
+    if not os.path.exists(path):
+        raise HTTPException(status_code=404, detail="Image not found.")
+    return FileResponse(path)
+
 @task_route.post("/image/{task_id}", tags=["Task"])
 async def upload_image(task_id: UUID, file: UploadFile,
-                       user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
     if 'image' not in file.content_type:
         raise HTTPException(status_code=400, detail=f"Unsuported file type - only images are supported.")
 

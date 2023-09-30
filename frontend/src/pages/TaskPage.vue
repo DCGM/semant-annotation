@@ -66,6 +66,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeMount, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from 'src/stores/user'
 import { api } from 'src/boot/axios'
 import { actionNotification, successNotification } from 'src/utils/notification'
@@ -77,6 +78,7 @@ import TaskInfo from 'src/components/annotations/TaskInfo.vue'
 import { useErrorStore } from 'src/stores/error'
 
 const errorStore = useErrorStore()
+const router = useRouter()
 
 const userStore = useUserStore()
 const addTaskDialog = ref(false)
@@ -103,7 +105,7 @@ function openDeleteDialog (task: AnnotationTask) {
 }
 
 function annotate(task: AnnotationTask) {
-  console.log('ANNOTATE ', task)
+  router.push('/annotation_tasks/' + task.id)
 }
 
 async function deleteTask(task: AnnotationTask) {
