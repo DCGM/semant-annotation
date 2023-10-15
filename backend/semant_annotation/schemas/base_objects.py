@@ -93,6 +93,12 @@ class AnnotationTaskInstanceUpdate(BaseModel):
     active: bool
 
 
+class Audio(BaseModel):
+    audio_base64: str
+    mime_type: str
+    text: str
+
+
 class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
     created_date: datetime
     last_change: datetime
