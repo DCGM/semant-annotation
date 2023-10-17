@@ -1,55 +1,48 @@
 <template>
-  <!-- text prompt with fixed height -->
-  <div class="text-subtitle2" style="height: 70px; overflow-y: scroll">
-    {{ selectedText }}
+  <div @keydown="key_handler">
+    <!-- text prompt with fixed height -->
+    <div class="text-subtitle2" style="height: 70px; overflow-y: scroll">
+      {{ selectedText }}
+    </div>
+    <q-input v-model="text" filled type="textarea" />
+    <q-btn
+      label="Remove last sentence"
+      @click="removeLastSentence"
+      :disable="recording || bussy"
+    />
+    <q-btn
+      label="Add next sentence"
+      @click="addNextSentence"
+      :disable="recording"
+    />
+    <!-- start audio recording -->
+    <q-btn
+      :icon="recording ? 'stop' : 'mic'"
+      color="primary"
+      @click="recording ? stopAudioRecording() : startAudioRecording()"
+      :disable="selectedText.length === 0 || bussy"
+      size="xl"
+    />
+    <!-- cancel recording -->
+    <q-btn
+      round
+      dense
+      icon="cancel"
+      color="negative"
+      @click="stopAudioRecording(true)"
+      :disable="!recording || bussy"
+    />
+    <!-- select input audio device -->
+    <q-select
+      v-model="selectedAudioDevice"
+      :options="audioDevices"
+      option-value="deviceId"
+      option-label="label"
+      label="Audio Device"
+      dense
+      @popup-show="refreshAudioDevices"
+    />
   </div>
-  <q-input v-model="text" filled type="textarea" />
-  <q-btn
-    label="Add next sentence"
-    @click="addNextSentence"
-    :disable="recording"
-  />
-  <q-btn
-    label="Remove last sentence"
-    @click="removeLastSentence"
-    :disable="recording || bussy"
-  />
-  <!-- start audio recording -->
-  <q-btn
-    v-if="!recording"
-    icon="mic"
-    color="primary"
-    @click="startAudioRecording"
-    :disable="selectedText.length === 0 || bussy"
-  />
-  <q-btn
-    v-else
-    round
-    dense
-    icon="mic_off"
-    color="primary"
-    @click="stopAudioRecording(false)"
-    :disable="!recording || bussy"
-  />
-  <!-- cancel recording -->
-  <q-btn
-    round
-    dense
-    icon="cancel"
-    color="negative"
-    @click="stopAudioRecording(true)"
-    :disable="!recording || bussy"
-  />
-  <!-- select input audio device -->
-  <q-select
-    v-model="selectedAudioDevice"
-    :options="audioDevices"
-    option-value="deviceId"
-    option-label="label"
-    label="Audio Device"
-    dense
-    @popup-show="refreshAudioDevices"
-  />
 </template>
 
 <script setup lang="ts">
@@ -58,6 +51,7 @@ import { defineComponent, computed } from 'vue';
 import { useUserStore } from 'src/stores/user';
 import { ref, onMounted } from 'vue';
 import { api } from 'boot/axios';
+import { start } from 'repl';
 
 const text = ref('');
 const selectedText = ref('');
@@ -70,11 +64,39 @@ let stream: MediaStream | null = null;
 let recording = ref(false);
 let bussy = ref(false);
 
+function count_letters(text: string) {
+  let count = 0;
+  for (const character of text) {
+    // only count letters - not spaces, number, interpunction, etc.
+    if (character.match(/[a-zA-Z]/)) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
+function key_handler(event: KeyboardEvent) {
+  // space
+  if (event.key === ' ') {
+    if (recording.value) {
+      stopAudioRecording();
+    } else {
+      if (count_letters(selectedText.value) > 0) {
+        startAudioRecording();
+      } else {
+        addNextSentence();
+      }
+    }
+  }
+}
+
 onMounted(async () => {
   audioDevices.value = await getAvailableAudioDevices();
   if (audioDevices.value.length > 0) {
     selectedAudioDevice.value = audioDevices.value[0];
   }
+  // register key handler
+  window.addEventListener('keydown', key_handler);
 });
 
 async function getAvailableAudioDevices() {
@@ -101,6 +123,7 @@ async function encodeBlob(blob: Blob) {
 
 async function startAudioRecording() {
   recording.value = true;
+  bussy.value = true;
   try {
     const bitrate = 64000;
     stream = await navigator.mediaDevices.getUserMedia({
@@ -122,10 +145,12 @@ async function startAudioRecording() {
   } catch (e) {
     console.log(e);
     stopAudioRecording();
+  } finally {
+    bussy.value = false;
   }
 }
 
-function stopAudioRecording(cancel = false) {
+async function stopAudioRecording(cancel = false) {
   console.log('stopAudioRecording');
   console.log(stream);
   console.log(mediaRecorder);
@@ -158,6 +183,7 @@ function stopAudioRecording(cancel = false) {
         recording.value = false;
         addNextSentence();
         bussy.value = false;
+        startAudioRecording();
       });
     } else {
       mediaRecorder.addEventListener('stop', async () => {
@@ -178,22 +204,28 @@ function stopAudioRecording(cancel = false) {
 
 function addNextSentence() {
   /* Add next sentence from text to selectedText */
-  const separators = ['.', '?', '!'];
+  const separators = ['.', '?', '!', ';', ':', '\n'];
 
-  // find first separator
-  let index = text.value.length;
-  for (const separator of separators) {
-    const i = text.value.indexOf(separator);
-    if (i >= 0 && i < index) {
-      index = i;
+  // try it 5 times
+  for (let i = 0; i < 5; i++) {
+    // find first separator
+    let index = text.value.length;
+    for (const separator of separators) {
+      const i = text.value.indexOf(separator);
+      if (i >= 0 && i < index) {
+        index = i;
+      }
     }
-  }
-  if (index < text.value.length) {
-    selectedText.value += text.value.substring(0, index + 1);
-    text.value = text.value.substring(index + 1);
-  } else {
-    selectedText.value += text.value;
-    text.value = '';
+    if (index < text.value.length) {
+      selectedText.value += text.value.substring(0, index + 1);
+      text.value = text.value.substring(index + 1);
+    } else {
+      selectedText.value += text.value;
+      text.value = '';
+    }
+    if (count_letters(selectedText.value) > 0) {
+      break;
+    }
   }
 }
 
