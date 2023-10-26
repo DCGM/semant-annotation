@@ -1,8 +1,9 @@
 <template>
   <q-card-section v-if="taskInstance?.image" class="row q-mt-md">
-    <img
+    <q-img
       :src="`${apiURL}/task/image/${taskInstance?.annotation_task_id}/${taskInstance?.id}`"
-      style="height: 300px"
+      style="max-width: 400px; max-height: 300px"
+      loading="lazy"
     />
   </q-card-section>
   <q-card-section
