@@ -20,6 +20,7 @@ import cv2
 import aiofiles
 import aiofiles.os
 import json
+from datetime import datetime
 from semant_annotation.config import config
 
 
@@ -102,8 +103,14 @@ async def new_task_instance_result(task_instance_result: base_objects.Annotation
 
 @task_route.put("/task_instance_result", tags=["Task"])
 async def update_task_instance_result(task_instance_result: base_objects.AnnotationTaskResultUpdate,
-        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
     await crud_general.update_obj(db, task_instance_result, model.AnnotationTaskResult)
+
+
+@task_route.get("/results/{task_id}/{user_id}/{from_time}/{to_time}/", response_model=List[base_objects.AnnotationTaskResult], tags=["Task"])
+async def get_task_instance_result(task_id: UUID, from_time: datetime, to_time: datetime, user_id: UUID,
+        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    return await crud_task.get_task_instance_result(db, task_id, from_time, to_time, user_id)
 
 
 async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):

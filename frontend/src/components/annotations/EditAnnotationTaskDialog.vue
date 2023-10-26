@@ -7,7 +7,7 @@
       </q-card-section>
       <q-card-section>
         <q-form @submit="onSubmit">
-          <q-input class="q-mt-md" square filled v-model="localTask.name" label="Model name"
+          <q-input class="q-mt-md" square filled v-model="localTask.name" label="Task name"
             :rules="[val => !!val || 'Required.', val => val.length > 2 || 'Too short.']" />
           <!-- type can be -->
           <q-editor class="q-mt-md" v-model="localTask.description" :toolbar="editorToolbarOptions" :fonts="editorFonts" />

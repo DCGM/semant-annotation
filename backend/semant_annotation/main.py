@@ -57,7 +57,7 @@ else:
     logging.warning(f'DEVELOPMENT')
     app.add_middleware(
          CORSMiddleware,
-         allow_origins=["http://localhost:9000", "http://127.0.0.1:9000"],
+         allow_origins=["http://localhost:9001", "http://127.0.0.1:9001", "http://pchradis2.fit.vutbr.cz:9001"],
          allow_credentials=True,
          allow_methods=["*"],
          allow_headers=["*"],

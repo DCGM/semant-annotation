@@ -25,6 +25,13 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true }
   },
   {
+    name: 'annotation_results',
+    path: '/annotation_results/',
+    component: () => import('src/layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('src/pages/ResultsPage.vue') }],
+    meta: { requiresAuth: true }
+  },
+  {
     name: 'annotation_statistics',
     path: '/annotation_statistics/',
     component: () => import('src/layouts/MainLayout.vue'),

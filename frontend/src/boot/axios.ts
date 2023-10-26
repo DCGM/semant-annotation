@@ -18,7 +18,7 @@ axios.defaults.withCredentials = true
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const apiURL = process.env.BACKEND_URL ? process.env.BACKEND_URL + '/api' : 'http://localhost:8000/api'
+const apiURL = process.env.BACKEND_URL ? process.env.BACKEND_URL + '/api' : 'http://pchradis2.fit.vutbr.cz:8000/api'
 const api = axios.create({ baseURL: apiURL })
 
 export default boot(({ app }) => {

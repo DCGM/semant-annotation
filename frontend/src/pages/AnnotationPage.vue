@@ -15,15 +15,33 @@
       </q-toolbar>
     </q-page-sticky>
 
-      <div v-if="taskInstance?.image" class="row justify-center q-mt-md">
-        <img :src="`${apiURL}/task/image/${taskInstance?.annotation_task_id}/${taskInstance?.id}`" style=" height: 300px"/>
+      <div v-if="taskInstance?.image" class="row q-mt-md">
+        <q-card style="max-width: 600px; width: 100%;">
+          <q-card-section>
+            <div class="text-h6">
+              Image
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <img :src="`${apiURL}/task/image/${taskInstance?.annotation_task_id}/${taskInstance?.id}`" style="height: 300px"/>
+          </q-card-section>
+        </q-card>
       </div>
-      <div v-if="taskInstance?.text " class="row justify-center q-mt-md">
-        <div style="max-width: 600px; width: 100%;" :innerHTML="taskInstance?.text" />
+      <div v-if="taskInstance?.text " class="row q-mt-md q-px-md">
+        <q-card style="max-width: 600px; width: 100%;">
+          <q-card-section>
+            <div class="text-h6">
+              Text
+            </div>
+          </q-card-section>
+          <q-card-section>
+            <div :innerHTML="taskInstance?.text" />
+          </q-card-section>
+        </q-card>
       </div>
       <div class="row q-gutter-md q-mt-md q-px-md">
       <!-- Subtqasks -->
-      <q-card v-for="subtask in relevantSubtasks" :key="subtask.id" class="q-pa-md" style="max-width: 400px; width: 100%;">
+      <q-card v-for="subtask in relevantSubtasks" :key="subtask.id" class="q-pa-md" style="max-width: 350px; width: 100%;">
         <q-card-section>
           <div class="text-h6">
             {{ subtask.name }}
