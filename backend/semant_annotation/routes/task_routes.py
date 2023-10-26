@@ -87,10 +87,11 @@ async def get_task_instance(task_id: UUID, result_count_new: int, result_count_c
     return task
 
 
-@task_route.get("/task_instance/{task_id}", response_model=List[base_objects.AnnotationTaskInstance], tags=["Task"])
-async def get_task_instance(task_id: int,
+@task_route.get("/task_instance/{task_instance_id}", response_model=base_objects.AnnotationTaskInstance, tags=["Task"])
+async def get_task_instance(task_instance_id: UUID,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    return await crud_task.get_task_instance(db, task_id)
+    result = await crud_task.get_task_instance(db, task_instance_id)
+    return result
 
 
 @task_route.post("/task_instance_result", tags=["Task"])
@@ -107,10 +108,11 @@ async def update_task_instance_result(task_instance_result: base_objects.Annotat
     await crud_general.update_obj(db, task_instance_result, model.AnnotationTaskResult)
 
 
-@task_route.get("/results/{task_id}/{user_id}/{from_time}/{to_time}/", response_model=List[base_objects.AnnotationTaskResult], tags=["Task"])
-async def get_task_instance_result(task_id: UUID, from_time: datetime, to_time: datetime, user_id: UUID,
+@task_route.post("/results", response_model=List[base_objects.AnnotationTaskResult], tags=["Task"])
+async def get_task_instance_result(query: base_objects.AnnotationTaskResultQuery,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    return await crud_task.get_task_instance_result(db, task_id, from_time, to_time, user_id)
+    return await crud_task.get_task_instance_result(db, query.annotation_task_id, query.user_id,
+                                                    query.from_date, query.to_date)
 
 
 async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):

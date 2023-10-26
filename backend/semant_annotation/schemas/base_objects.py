@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, NamedTuple, Union, Optional
 from uuid import UUID
-from datetime import datetime
+from datetime import date, datetime
 
 import enum
 
@@ -116,3 +116,10 @@ class AnnotationTaskResult(AnnotationTaskResultUpdate):
 
     class Config:
         from_attributes = True
+
+
+class AnnotationTaskResultQuery(BaseModel):
+    annotation_task_id: UUID
+    from_date: date = None
+    to_date: date = None
+    user_id: UUID = None
