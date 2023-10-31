@@ -123,3 +123,18 @@ class AnnotationTaskResultQuery(BaseModel):
     from_date: date = None
     to_date: date = None
     user_id: UUID = None
+
+
+class TimeTrackingItemNew(BaseModel):
+    id: UUID
+    user_id: UUID
+    start_time: datetime
+    end_time: datetime
+    task: str
+    description: str
+
+
+class TimeTrackingItem(TimeTrackingItemNew):
+    created_date: datetime
+    deleted: bool
+
