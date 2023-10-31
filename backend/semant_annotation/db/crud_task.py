@@ -68,22 +68,8 @@ async def get_task_instance_random(db: AsyncSession, task_id: UUID, result_count
         raise DBError(f'Failed fetching task instance from database.')
 
 
-async def get_task_instance(db: AsyncSession, task_instance_id: UUID) -> base_objects.AnnotationTaskInstance:
-    try:
-        async with db.begin():
-            stmt = select(model.AnnotationTaskInstance).filter(model.AnnotationTaskInstance.id == task_instance_id)
-            result = await db.execute(stmt)
-            db_task_instance = result.scalar_one_or_none()
-            if not db_task_instance:
-                return None
-            return base_objects.AnnotationTaskInstance.model_validate(db_task_instance)
-    except exc.SQLAlchemyError as e:
-        logging.error(str(e))
-        raise DBError(f'Failed fetching task instance from database.')
-
-
-async def get_task_instance_result(db: AsyncSession, task_id: UUID, user_id: UUID=None, from_date: datetime=None,
-                                   to_date: datetime=None) -> base_objects.AnnotationTaskResult:
+async def get_task_instance_results(db: AsyncSession, task_id: UUID, user_id: UUID=None, from_date: datetime=None,
+                                    to_date: datetime=None) -> base_objects.AnnotationTaskResult:
     try:
         async with db.begin():
             stmt = select(model.AnnotationTaskResult).join(model.AnnotationTaskInstance)\

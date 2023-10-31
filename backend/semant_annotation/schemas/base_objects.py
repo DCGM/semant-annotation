@@ -138,3 +138,6 @@ class TimeTrackingItem(TimeTrackingItemNew):
     created_date: datetime
     deleted: bool
 
+    class Config:
+        from_attributes = True
+
