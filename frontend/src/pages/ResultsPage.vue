@@ -3,29 +3,26 @@
     <q-card class="q-pa-md">
       <q-card-section>
         <q-select
-          v-model="selected_task"
-          :options="tasks"
-          label="Task"
-          clearable
-          option-label="name"
-        />
+                  v-model="selected_task"
+                  :options="tasks"
+                  label="Task"
+                  clearable
+                  option-label="name" />
         <q-select
-          v-model="selected_user"
-          :options="users"
-          label="User"
-          option-label="username"
-          clearable
-        />
+                  v-model="selected_user"
+                  :options="users"
+                  label="User"
+                  option-label="username"
+                  clearable />
         <q-input v-model="from_date" label="From date" type="date" clearable />
         <q-input v-model="to_date" label="To date" type="date" clearable />
       </q-card-section>
       <q-card-actions>
         <q-btn
-          label="Load results"
-          color="primary"
-          @click="loadResults"
-          :disable="!selected_task"
-        />
+               label="Load results"
+               color="primary"
+               @click="loadResults"
+               :disable="!selected_task" />
         <q-tooltip v-if="!selected_task">Select task first</q-tooltip>
       </q-card-actions>
       <q-btn v-if="showTable" label="Show table" @click="showTable = false" />
@@ -46,12 +43,11 @@
         <q-separator inset />
         <q-card-section horizontal>
           <q-card-section
-            v-for="subtask in selected_task.subtasks"
-            :key="subtask.id"
-          >
+                          v-for="subtask in selected_task.subtasks"
+                          :key="subtask.id">
             <div class="text-h6">{{ subtask.name }}</div>
             <div v-for="value in result[subtask.id]" :key="value">
-              {{ value }}
+              {{ value.text }}
             </div>
           </q-card-section>
         </q-card-section>
@@ -162,7 +158,7 @@ onMounted(async () => {
   console.log(users.value);
 });
 
-async function loadTasks() {
+async function loadTasks () {
   try {
     Loading.show({ delay: 300 });
     tasks.value = await api.get('/task/task/').then((res) => res.data);
@@ -173,7 +169,7 @@ async function loadTasks() {
   }
 }
 
-async function loadUsers() {
+async function loadUsers () {
   try {
     Loading.show({ delay: 300 });
     users.value = await api.get('/user/').then((res) => res.data);
@@ -184,7 +180,7 @@ async function loadUsers() {
   }
 }
 
-async function loadResults() {
+async function loadResults () {
   if (!selected_task.value) {
     return;
   }
