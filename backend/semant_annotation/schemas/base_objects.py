@@ -9,6 +9,7 @@ import enum
 class AnnotationResultType(enum.Enum):
     NEW = 'new'
     CORRECTION = 'correction'
+    REJECTED = 'rejected'
 
 
 class User(BaseModel):

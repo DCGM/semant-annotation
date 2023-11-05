@@ -19,12 +19,11 @@ async def store_task_instance_result(db, task_instance_result: base_objects.Anno
             if result_type == base_objects.AnnotationResultType.NEW:
                 stmt = update(model.AnnotationTaskInstance).where(model.AnnotationTaskInstance.id == task_instance_result.annotation_task_instance_id)
                 stmt = stmt.values({'result_count_new': model.AnnotationTaskInstance.result_count_new + 1})
+                await db.execute(stmt)
             elif result_type == base_objects.AnnotationResultType.CORRECTION:
                 stmt = update(model.AnnotationTaskInstance).where(model.AnnotationTaskInstance.id == task_instance_result.annotation_task_instance_id)
                 stmt = stmt.values({'result_count_correction': model.AnnotationTaskInstance.result_count_correction + 1})
-            else:
-                raise DBError(f'Unknown result type {result_type}.')
-            await db.execute(stmt)
+                await db.execute(stmt)
 
             db_task_instance_result = model.AnnotationTaskResult(**task_instance_result.model_dump())
             db.add(db_task_instance_result)

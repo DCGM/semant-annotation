@@ -80,3 +80,33 @@ export interface AnnotationTaskResult extends AnnotationTaskResultUpdate {
   last_change: string
 }
 
+export interface TimeTrackingItemNew {
+  id: string
+  user_id: string
+  start_time: string
+  end_time: string
+  task: string
+  description: string
+}
+
+export interface TimeTrackingItem extends TimeTrackingItemNew {
+  created_date: string
+  deleted: boolean
+}
+
+export interface TextHistory {
+  text: string
+  timestamp: number
+}
+
+
+export interface TextResponse {
+  history: TextHistory[]
+  timestamp: number
+  text: string
+}
+
+export  type TextResponses = TextResponse[]
+
+export type SubtaskResponses = { [id: string] : TextResponses; }
+
