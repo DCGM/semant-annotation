@@ -48,7 +48,7 @@
       <SubtaskResponse v-for="subtask in relevantSubtasks" :key="subtask.id" :subtask="subtask"
                        @responseUpdate="subtaskResponseUpdate(subtask.id, $event)" ref="subtaskResponsesRefs" />
     </div>
-    <TaskInfo v -if=" annotationTask" v-model="taskInfoDialog" :task="annotationTask" />
+    <TaskInfo v-if="annotationTask" v-model="taskInfoDialog" :task="annotationTask" />
   </q-page>
 </template>
 

@@ -8,7 +8,7 @@
                         :default-open="true"
                         expand-icon="info">
         <!-- show descriptin -->
-        Description: {{ subtask.description }}
+        Description: <span v-html="subtask.description" />
       </q-expansion-item>
     </q-card-section>
     <q-card-section>
