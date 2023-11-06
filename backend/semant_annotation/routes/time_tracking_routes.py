@@ -42,7 +42,7 @@ async def get_time_tracking_by_id(time_tracking_id: UUID,
 @time_tracking_route.post("/time_tracking", tags=["Time Tracking"])
 async def new_time_tracking(time_tracking: base_objects.TimeTrackingItemNew,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
-    if not user_token.trusted_user and time_tracking.user_id != user_token.user_id:
+    if not user_token.trusted_user and time_tracking.user_id != UUID(user_token.user_id):
         raise HTTPException(status_code=403, detail="Can only create own time tracking entries.")
     await crud_general.new(db, time_tracking, model.TimeTrackingItem)
 
