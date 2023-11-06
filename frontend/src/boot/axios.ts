@@ -19,7 +19,7 @@ axios.defaults.withCredentials = true;
 // "export default () => {}" function below (which runs individually
 // for each client)
 const apiURL = process.env.BACKEND_URL
-  ? process.env.BACKEND_URL + '/api'
+  ? process.env.BACKEND_URL
   : 'http://localhost:8000/api';
 const api = axios.create({ baseURL: apiURL });
 
