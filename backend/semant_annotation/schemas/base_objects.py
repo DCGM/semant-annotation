@@ -103,10 +103,22 @@ class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
         from_attributes = True
 
 
+class SimplifiedAnnotationTaskResult(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    result_type: AnnotationResultType
+    user_id: UUID
+
+    class Config:
+        from_attributes = True
+
+
 class AnnotationTaskResultUpdate(BaseModel):
     id: UUID
     user_id: UUID
     annotation_task_instance_id: UUID
+    start_time: datetime
+    end_time: datetime
     result: str
     result_type: AnnotationResultType
 

@@ -49,7 +49,7 @@ const routes: RouteRecordRaw[] = [
     path: '/annotation_statistics/',
     component: () => import('src/layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/UsersPage.vue') },
+      { path: '', component: () => import('src/pages/StatisticsPage.vue') },
     ],
     meta: { requiresAuth: true },
   },

@@ -42,7 +42,8 @@
             </q-item>
           </router-link>
 
-          <router-link v-if="userStore.user" to="/annotation_results/" style="text-decoration: none; color: inherit;">
+          <router-link v-if="userStore.user && userStore.user.trusted" to="/annotation_results/"
+                       style="text-decoration: none; color: inherit;">
             <q-item class="drawer-item"
                     :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_results') }"
                     v-ripple clickable>
@@ -69,7 +70,8 @@
           </router-link>
 
 
-          <router-link v-if="userStore.user" to="/annotation_statistics/" style="text-decoration: none; color: inherit;">
+          <router-link v-if="userStore.user && userStore.user.trusted" to="/annotation_statistics/"
+                       style="text-decoration: none; color: inherit;">
             <q-item class="drawer-item"
                     :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_statistics') }"
                     v-ripple clickable>

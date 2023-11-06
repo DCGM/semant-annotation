@@ -113,6 +113,14 @@ async def get_task_instance_result(query: base_objects.AnnotationTaskResultQuery
                                                      query.from_date, query.to_date)
 
 
+@task_route.post("/result_times", response_model=List[base_objects.SimplifiedAnnotationTaskResult], tags=["Task"])
+async def get_task_instance_result_times(query: base_objects.AnnotationTaskResultQuery,
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+    if not user_token.trusted_user and user_token.user_id != query.user_id:
+        raise HTTPException(status_code=403, detail="You can only access your own statistics.")
+    return await crud_task.get_task_instance_result_times(db, query.annotation_task_id, query.user_id,
+                                                     query.from_date, query.to_date)
+
 async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
     path = os.path.join(config.UPLOADED_IMAGES_FOLDER, str(task_id))
     if make_dir:
@@ -127,6 +135,7 @@ async def get_image(task_id: UUID, image_id: UUID,
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="Image not found.")
     return FileResponse(path)
+
 
 @task_route.post("/image/{task_id}", tags=["Task"])
 async def upload_image(task_id: UUID, file: UploadFile,
@@ -162,3 +171,5 @@ async def upload_image(task_id: UUID, file: UploadFile,
         file.file.close()
 
     return {"message": f"Successfully uploaded {file.filename}"}
+
+

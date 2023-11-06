@@ -73,7 +73,18 @@ export interface AnnotationTaskResultUpdate {
   annotation_task_instance_id: string
   result: string
   result_type: string
+  start_time: string
+  end_time: string
 }
+
+
+export class SimplifiedAnnotationTaskResult{
+  user_id = ''
+  result_type = ''
+  start_time = ''
+  end_time = ''
+}
+
 
 export interface AnnotationTaskResult extends AnnotationTaskResultUpdate {
   created_date: string
@@ -96,13 +107,12 @@ export interface TimeTrackingItem extends TimeTrackingItemNew {
 
 export interface TextHistory {
   text: string
-  timestamp: number
+  timestamp: string
 }
-
 
 export interface TextResponse {
   history: TextHistory[]
-  timestamp: number
+  timestamp: string
   text: string
 }
 

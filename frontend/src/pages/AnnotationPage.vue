@@ -80,6 +80,8 @@ const taskInstance = ref<AnnotationTaskInstance | null>(null)
 
 const subtaskResponsesRefs = ref<SubtaskResponse[]>([])
 
+let startTime = new Date().toISOString()
+
 
 const subtaskResponses = ref<SubtaskResponses>({})
 
@@ -130,6 +132,8 @@ async function submitResponse (resultType = 'new') {
       user_id: userStore.user.id,
       annotation_task_instance_id: taskInstance.value.id,
       result: JSON.stringify(subtaskResponses.value),
+      start_time: startTime.slice(0, -1),
+      end_time: new Date().toISOString().slice(0, -1),
       result_type: resultType
     }
     await api.post('/task/task_instance_result', resultData)
@@ -169,6 +173,7 @@ async function getNextAnnotationTaskInstance () {
     for (const subtaskElement of subtaskResponsesRefs.value) {
       subtaskElement.clear()
     }
+    startTime = new Date().toISOString()
   } catch (error) {
     errorStore.reportError('Error', 'Failed to load annotation task instance', error)
     router.push('/annotation_tasks')
