@@ -4,7 +4,6 @@
       <q-expansion-item
                         v-model="expanded"
                         :label="subtask.name"
-                        :caption="subtask.description"
                         :expand-separator="true"
                         :default-open="true"
                         expand-icon="info">
