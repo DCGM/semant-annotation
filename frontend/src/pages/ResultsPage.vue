@@ -28,6 +28,15 @@
       <q-btn v-if="showTable" label="Show table" @click="showTable = false" />
       <q-btn v-else label="Show cards" @click="showTable = true" />
     </q-card>
+    <div v-if="results">
+      <q-card class="q-pa-md">
+        <q-card-section>
+          <div class="text-h6">Total results: {{ results.length }} </div>
+          <div class="text-h6">Annotated: {{ annotatedCount }} </div>
+          <div class="text-h6">Rejected: {{ rejectedCount }} </div>
+        </q-card-section>
+      </q-card>
+    </div>
 
     <div v-if="showTable">
       <q-table v-if="results" :rows="rows" :columns="columns" row-key="id" />
@@ -78,6 +87,20 @@ const to_date = ref<string>('');
 const selected_task = ref<AnnotationTask | null>(null);
 const selected_user = ref<User | null>(null);
 const showTable = ref<boolean>(false);
+
+const rejectedCount = computed(() => {
+  if (!results.value) {
+    return 0;
+  }
+  return results.value.filter((r) => r.result_type == 'rejected').length;
+});
+
+const annotatedCount = computed(() => {
+  if (!results.value) {
+    return 0;
+  }
+  return results.value.filter((r) => r.result_type == 'new').length;
+});
 
 let baseColumns = [
   {
@@ -200,6 +223,24 @@ async function loadResults () {
     results.value = await api
       .post('/task/results', query)
       .then((res) => res.data);
+    // sort results by results[i].user_id and then results[i].end_time
+    results.value.sort((a, b) => {
+      if (a.user_id < b.user_id) {
+        return -1;
+      }
+      if (a.user_id > b.user_id) {
+        return 1;
+      }
+      if (a.end_time < b.end_time) {
+        return -1;
+      }
+      if (a.end_time > b.end_time) {
+        return 1;
+      }
+      return 0;
+    });
+
+
   } catch (error) {
     errorStore.reportError('Error', 'Failed to get results.', error);
   } finally {

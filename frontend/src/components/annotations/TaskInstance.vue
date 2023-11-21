@@ -4,6 +4,7 @@
       :src="`${apiURL}/task/image/${taskInstance?.annotation_task_id}/${taskInstance?.id}`"
       style="max-width: 400px; max-height: 300px"
       loading="lazy"
+      fit="contain"
     />
   </q-card-section>
   <q-card-section
