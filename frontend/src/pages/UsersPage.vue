@@ -28,7 +28,7 @@
       </q-table>
     </div>
     <AddUserDialog v-model="addUserDialog" @user_changed="loadUsers" />
-    <UserProfileDialog v-model="userProfileDialog" :user="selectedUser" @user_changed="loadUsers" />
+    <UserProfileDialog v-if="selectedUser" v-model="userProfileDialog" :user="selectedUser" @user_changed="loadUsers" />
   </q-page>
 </template>
 
@@ -41,12 +41,14 @@ import UserProfileDialog from 'src/components/user/UserProfileDialog.vue'
 import { api } from 'src/boot/axios'
 import { actionNotification, successNotification } from 'src/utils/notification'
 import { User } from 'src/models'
+import { useErrorStore } from 'src/stores/error'
 
 const userStore = useUserStore()
 const addUserDialog = ref(false)
 const userProfileDialog = ref(false)
 const users = ref([])
 const selectedUser = ref<User | null>(null)
+const errorStore = useErrorStore()
 
 function edit (user: User) {
   selectedUser.value = user
@@ -70,6 +72,16 @@ const columns: QTableProps['columns'] = [
     sortable: true
   }
 ]
+
+
+function disableUser () {
+  errorStore.reportError('NOT IMPLEMENTED YET', 'Disabling users is not implemented yet.', '')
+}
+
+function showStatistics () {
+  errorStore.reportError('NOT IMPLEMENTED YET', 'Showing statistics is not implemented yet.', '')
+}
+
 
 async function loadUsers () {
   const dismiss = actionNotification('Loading users.')

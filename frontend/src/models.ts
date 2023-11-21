@@ -73,10 +73,50 @@ export interface AnnotationTaskResultUpdate {
   annotation_task_instance_id: string
   result: string
   result_type: string
+  start_time: string
+  end_time: string
 }
+
+
+export class SimplifiedAnnotationTaskResult{
+  user_id = ''
+  result_type = ''
+  start_time = ''
+  end_time = ''
+}
+
 
 export interface AnnotationTaskResult extends AnnotationTaskResultUpdate {
   created_date: string
   last_change: string
 }
+
+export interface TimeTrackingItemNew {
+  id: string
+  user_id: string
+  start_time: string
+  end_time: string
+  task: string
+  description: string
+}
+
+export interface TimeTrackingItem extends TimeTrackingItemNew {
+  created_date: string
+  deleted: boolean
+}
+
+export interface TextHistory {
+  text: string
+  timestamp: string
+}
+
+export interface TextResponse {
+  history: TextHistory[]
+  timestamp: string
+  text: string
+}
+
+export  type TextResponses = TextResponse[]
+
+export type SubtaskResponses = { [id: string] : TextResponses; }
 

@@ -3,18 +3,18 @@
     @keydown.stop="dialogKeyhandler" no-backdrop-dismiss no-shake>
     <q-card class="q-pa-lg shadow-1" style="width: 800px; max-width: 90vw;">
       <q-card-section>
-        <div v-if="!props.subtask" class="text-h5">New annotation task</div>
-        <div v-if="props.subtask" class="text-h5">Edit annotation task</div>
+        <div v-if="!props.subtask" class="text-h5">New annotation subtask</div>
+        <div v-if="props.subtask" class="text-h5">Edit annotation subtask</div>
       </q-card-section>
       <q-card-section>
         <q-form @submit="onSubmit">
-          <q-input class="q-mt-md" square filled v-model="localTask.name" label="Model name"
+          <q-input class="q-mt-md" square filled v-model="localTask.name" label="Subtask name"
             :rules="[val => !!val || 'Required.', val => val.length > 2 || 'Too short.']" />
           <!-- type can be -->
           <q-editor class="q-mt-md" v-model="localTask.description" :toolbar="editorToolbarOptions" :fonts="editorFonts" />
           <q-toggle v-model="localTask.active" label="Is active" />
 
-          <q-btn unelevated color="primary" size="lg" class="full-width q-mt-md" label="Update task" type="submit"
+          <q-btn unelevated color="primary" size="lg" class="full-width q-mt-md" label="Update subtask" type="submit"
             :disable="disable" />
           <q-btn flat color="negative" size="md" class="full-width q-mt-md" label="Cancel"
             @click="emit('update:modelValue', false)" :disable="disable" />

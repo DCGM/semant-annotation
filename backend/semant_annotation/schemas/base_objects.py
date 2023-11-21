@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, NamedTuple, Union, Optional
 from uuid import UUID
-from datetime import datetime
+from datetime import date, datetime
 
 import enum
 
@@ -9,6 +9,7 @@ import enum
 class AnnotationResultType(enum.Enum):
     NEW = 'new'
     CORRECTION = 'correction'
+    REJECTED = 'rejected'
 
 
 class User(BaseModel):
@@ -102,10 +103,22 @@ class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
         from_attributes = True
 
 
+class SimplifiedAnnotationTaskResult(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    result_type: AnnotationResultType
+    user_id: UUID
+
+    class Config:
+        from_attributes = True
+
+
 class AnnotationTaskResultUpdate(BaseModel):
     id: UUID
     user_id: UUID
     annotation_task_instance_id: UUID
+    start_time: datetime
+    end_time: datetime
     result: str
     result_type: AnnotationResultType
 
@@ -116,3 +129,28 @@ class AnnotationTaskResult(AnnotationTaskResultUpdate):
 
     class Config:
         from_attributes = True
+
+
+class AnnotationTaskResultQuery(BaseModel):
+    annotation_task_id: UUID
+    from_date: date = None
+    to_date: date = None
+    user_id: UUID = None
+
+
+class TimeTrackingItemNew(BaseModel):
+    id: UUID
+    user_id: UUID
+    start_time: datetime
+    end_time: datetime
+    task: str
+    description: str
+
+
+class TimeTrackingItem(TimeTrackingItemNew):
+    created_date: datetime
+    deleted: bool
+
+    class Config:
+        from_attributes = True
+

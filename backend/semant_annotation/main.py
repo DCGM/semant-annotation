@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 
 from semant_annotation.config import config
 from semant_annotation.db import init_db, DBError
-from semant_annotation.routes import user_route, news_route, task_route
+from semant_annotation.routes import user_route, news_route, task_route, time_tracking_route
 from semant_annotation.authentication import authentication_route
 
 
@@ -27,8 +27,11 @@ tags_metadata = [
     {
         "name": "Authentication",
         "description": "",
+    },
+    {
+        "name": "Time Tracking",
+        "description": "",
     }
-
 ]
 
 app = FastAPI(openapi_tags=tags_metadata)
@@ -44,6 +47,7 @@ app.include_router(authentication_route, prefix="/api")
 app.include_router(authentication_route, prefix="")
 app.include_router(news_route, prefix="/api/news")
 app.include_router(task_route, prefix="/api/task")
+app.include_router(time_tracking_route, prefix="/api/time_tracking")
 
 
 @app.exception_handler(DBError)
@@ -57,7 +61,7 @@ else:
     logging.warning(f'DEVELOPMENT')
     app.add_middleware(
          CORSMiddleware,
-         allow_origins=["http://localhost:9000", "http://127.0.0.1:9000"],
+         allow_origins=["http://localhost:9001", "http://127.0.0.1:9001", "http://pchradis2.fit.vutbr.cz:9001"],
          allow_credentials=True,
          allow_methods=["*"],
          allow_headers=["*"],

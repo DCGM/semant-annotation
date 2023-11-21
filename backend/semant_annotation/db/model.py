@@ -103,7 +103,21 @@ class AnnotationTaskResult(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=False)
     annotation_task_instance_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('annotation_task_instances.id'), index=True, nullable=False)
+    start_time: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    end_time: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     result: Mapped[str]
     result_type: Mapped[base_objects.AnnotationResultType] = mapped_column(nullable=False)
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+
+
+class TimeTrackingItem(Base):
+    __tablename__ = 'time_tracking_items'
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=False)
+    start_time: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    end_time: Mapped[datetime.datetime] = mapped_column(index=True, nullable=True)
+    task: Mapped[str] = mapped_column(String(300), nullable=False)
+    description: Mapped[str] = mapped_column(String(300), nullable=False)
+    created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
+    deleted: Mapped[bool] = mapped_column(default=False, nullable=False)

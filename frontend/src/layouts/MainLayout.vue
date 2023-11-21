@@ -20,7 +20,7 @@
 
           <router-link to="/news/" style="text-decoration: none; color: inherit;">
             <q-item class="drawer-item" :class="{ 'drawer-item-selected': currentRoute.startsWith('/news') }" v-ripple
-              clickable>
+                    clickable>
               <q-item-section avatar>
                 <q-icon name="fa-solid fa-newspaper" />
               </q-item-section>
@@ -32,7 +32,7 @@
 
           <router-link v-if="userStore.user" to="/annotation_tasks/" style="text-decoration: none; color: inherit;">
             <q-item class="drawer-item" :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_tasks') }"
-              v-ripple clickable>
+                    v-ripple clickable>
               <q-item-section avatar>
                 <q-icon name="fa-solid fa-book-open-reader" />
               </q-item-section>
@@ -42,9 +42,39 @@
             </q-item>
           </router-link>
 
-          <router-link v-if="userStore.user" to="/annotation_statistics/" style="text-decoration: none; color: inherit;">
-            <q-item class="drawer-item" :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_statistics') }"
-              v-ripple clickable>
+          <router-link v-if="userStore.user && userStore.user.trusted" to="/annotation_results/"
+                       style="text-decoration: none; color: inherit;">
+            <q-item class="drawer-item"
+                    :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_results') }"
+                    v-ripple clickable>
+              <q-item-section avatar>
+                <q-icon name="fa-solid fa-book" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Annotation results</q-item-label>
+              </q-item-section>
+            </q-item>
+          </router-link>
+
+          <!-- Time tracking -->
+          <router-link v-if="userStore.user" to="/time_tracking/" style="text-decoration: none; color: inherit;">
+            <q-item class="drawer-item" :class="{ 'drawer-item-selected': currentRoute.startsWith('/time_tracking') }"
+                    v-ripple clickable>
+              <q-item-section avatar>
+                <q-icon name="fa-solid fa-clock" />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>Time tracking</q-item-label>
+              </q-item-section>
+            </q-item>
+          </router-link>
+
+
+          <router-link v-if="userStore.user && userStore.user.trusted" to="/annotation_statistics/"
+                       style="text-decoration: none; color: inherit;">
+            <q-item class="drawer-item"
+                    :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_statistics') }"
+                    v-ripple clickable>
               <q-item-section avatar>
                 <q-icon name="fa-solid fa-book" />
               </q-item-section>
@@ -55,9 +85,9 @@
           </router-link>
 
           <router-link v-if="userStore.user && userStore.user.trusted" to="/users/"
-            style="text-decoration: none; color: inherit;">
+                       style="text-decoration: none; color: inherit;">
             <q-item class="drawer-item" :class="{ 'drawer-item-selected': currentRoute.startsWith('/users') }" v-ripple
-              clickable>
+                    clickable>
               <q-item-section avatar>
                 <q-icon name="supervisor_account" />
               </q-item-section>
