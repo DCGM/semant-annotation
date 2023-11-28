@@ -184,7 +184,7 @@ onMounted(async () => {
 async function loadTasks () {
   try {
     Loading.show({ delay: 300 });
-    tasks.value = await api.get('/task/task/').then((res) => res.data);
+    tasks.value = await api.get('/task/task').then((res) => res.data);
   } catch (error) {
     errorStore.reportError('Error', 'Failed to get tasks.', error);
   } finally {

@@ -85,7 +85,7 @@ function showStatistics () {
 
 async function loadUsers () {
   const dismiss = actionNotification('Loading users.')
-  const retirevedUsers = await api.get('/user')
+  const retirevedUsers = await api.get('/user/')
   dismiss()
   successNotification('Loaded users.')
   users.value = retirevedUsers.data

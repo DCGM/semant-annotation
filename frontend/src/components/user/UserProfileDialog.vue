@@ -83,7 +83,7 @@ async function updateUser () {
       disabled: disabled.value
     }
     console.log(user)
-    await api.put('/user', user)
+    await api.put('/user/', user)
     await userStore.testAuthentication()
     Notify.create({
       message: 'User information successfully updated',

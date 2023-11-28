@@ -34,6 +34,7 @@ async def store_task_instance_result(db, task_instance_result: base_objects.Anno
         logging.error(str(e))
         raise DBError(f'Failed storing task instance result in database.')
 
+
 def base_select_random_instance(task_id: UUID, result_count_new: int, result_count_correction: int, time_delta: timedelta, random_number: int, greater_or_equal: bool) -> select:
     stmt = select(model.AnnotationTaskInstance).filter(model.AnnotationTaskInstance.annotation_task_id == task_id)
     if result_count_correction >= 0:

@@ -1,4 +1,5 @@
 import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
@@ -48,6 +49,9 @@ app.include_router(authentication_route, prefix="")
 app.include_router(news_route, prefix="/api/news")
 app.include_router(task_route, prefix="/api/task")
 app.include_router(time_tracking_route, prefix="/api/time_tracking")
+
+if os.path.isdir("semant_annotation/static"):
+    app.mount("/", StaticFiles(directory="semant_annotation/static", html=True), name="static")
 
 
 @app.exception_handler(DBError)

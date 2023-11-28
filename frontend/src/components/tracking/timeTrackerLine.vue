@@ -56,7 +56,7 @@ const props = defineProps<Props>()
 
 const emit = defineEmits(['addTimeEntry'])
 
-const projectOptions = ref(['Anotace obrázků', 'Anotace textů', 'Anotace chodců', 'Vyhledávání obrázků', 'Vyhledávání textů', 'Vyhledávání obličejů', 'Anotace Stránek'])
+const projectOptions = ref(['Anotace obrázků', 'Anotace textů', 'Anotace chodců', 'Vyhledávání obrázků', 'Vyhledávání textů', 'Vyhledávání obličejů', 'Anotace Stránek', 'TextBite'])
 const selectedDate = ref('')
 const timeFrom = ref('')
 const timeTo = ref('')
