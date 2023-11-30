@@ -19,6 +19,7 @@ def parse_args():
     parser.add_argument('-e', '--end-date', default='3000-01-0', help='Results will include this date.')
     parser.add_argument('-k', '--keypress-time', default='180', help='Time between keypress in seconds')
     parser.add_argument('-u', '--api-url', required=True, help='API URL.')
+    parser.add_argument('-b', '--export-blocks', action='store_true', help='Export time blocks')
     return parser.parse_args()
 
 
@@ -90,6 +91,31 @@ def time_tracking_users(session, user, time_tracking_url, start_time, end_time):
             user_record[record['task']] = time_spent.seconds
 
     return user_record_to_time(user_record)
+
+def get_time_blocks(session, user, time_tracking_url, start_time, end_time):
+    user_tracking_time_url = format_time_tracking_url(time_tracking_url, start_time, end_time, user['id'])
+    user_time_tracking = query_api(user_tracking_time_url, session, None)
+
+    time_blocks = {'user_name': user['username'], 'email': user['email'], 'user_id': user['id']}
+
+    for record in user_time_tracking:
+        if not record['task'] in time_blocks:
+            time_blocks[record['task']] = []
+        time_blocks[record['task']].append({
+            'start': record['start_time'],
+            'end': record['end_time'],
+        })
+
+    return time_blocks
+
+def get_time_blocks_list(session, users, time_tracking_url, start_time, end_time):
+    time_blocks_list = []
+    for user in users:
+        time_blocks = get_time_blocks(session, user, time_tracking_url, start_time+ 'T00:00:00', end_time+ 'T23:59:59')
+        if len(time_blocks) == 2 and 'user_id' in time_blocks and 'user_name' in time_blocks and 'email' in time_blocks:
+            continue
+        time_blocks_list.append(time_blocks)
+    return time_blocks_list
 
 
 def time_task(data, start_time, end_time, keypress_time):
@@ -177,7 +203,6 @@ def main():
     tasks = [item for item in tasks if item['active']]
     
     final_list = get_final_list(users, tasks, args.start_date, args.end_date, keypress_time, task_result_url, time_tracking_url, session)
-
     field_names = []
     field_names_dict = max(final_list, key=len)
     for key in field_names_dict:
@@ -192,6 +217,12 @@ def main():
         writer.writeheader() 
         writer.writerows(final_list) 
 
+    if args.export_blocks:
+        time_blocks_list = get_time_blocks_list(session, users, time_tracking_url, args.start_date, args.end_date)
+        with open(args.output + '_time_blocks.jsonl', 'w') as jsonfile:
+            for item in time_blocks_list:
+                jsonfile.write(json.dumps(item) + '\n')
+    
 
 if __name__ == '__main__':
     main()
