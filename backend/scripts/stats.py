@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('-o', '--output', required=True, help='Destination JSON file.')
     parser.add_argument('-p', '--password', required=True, help='')
     parser.add_argument('-s', '--start-date', default='2000-01-01', help='Results will include this date.')
-    parser.add_argument('-e', '--end-date', default='3000-01-0', help='Results will include this date.')
+    parser.add_argument('-e', '--end-date', default='3000-01-01', help='Results will include this date.')
     parser.add_argument('-k', '--keypress-time', default='180', help='Time between keypress in seconds')
     parser.add_argument('-u', '--api-url', required=True, help='API URL.')
     parser.add_argument('-b', '--export-blocks', action='store_true', help='Export time blocks')
