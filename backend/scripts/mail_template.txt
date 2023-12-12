@@ -16,12 +16,12 @@ Naměřený čas:       {Anotace obrázků z historických dokumentů} hodin
  
 Anotace vyhledávání obličejů:
 Vámi uvedený čas :  {Vyhledávání obličejů} hodin
-Naměřený čas:       {statistics/obliceje_data_2023-01-01_2023-11-20} hodin
+Naměřený čas:       {statistics/faces/face_stats_2023-01-01_2023-11-20} hodin
  
 Anotace vyhledávání obrázků:
 Vámi uvedený čas :  {Vyhledávání obrázků} hodin
-Naměřený čas:       {statistics/obrazky_2023-11-13_2023-11-19} hodin
+Naměřený čas:       {statistics/image_search/image_search_stats_2023-11-01_2023-11-20} hodin
 
 Anotace vyhledávání textů:
 Vámi uvedený čas :  {Vyhledávání textů}
-Naměřený čas:       {statistics/start-11-21-23}
+Naměřený čas:       {statistics/text_search/text_search_stats_2023-11-01_2023-11-20}
