@@ -1,4 +1,6 @@
-Statistiky pro uživatele {full_name}.
+Statistiky anotací pro Českou AI uživatele {full_name}.
+
+Pro každou z šesti úloh je uveden čas spočítaný podle vámi zadaných položek ve "Time Tracking" aplikace anotator.semant.cz. Pak je uveden čas, který jsme spočítali podle vaší aktivity našich aplikacích. Způsob měření aktivity ještě možná trochu upravíme. Pokud si myslíte, že naše měření času podle aktivity neodpovídá skutečnosti, napište.
 
 Anotoce textů:
 Vámi uvedený čas :  {Anotace textů} hodin
