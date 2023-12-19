@@ -18,7 +18,8 @@ def format_dict(dict):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', '--login', default='ihradis@fit.vutbr.cz', help='Username.')
+    parser.add_argument('-l', '--login', default='ihradis', help='Username to log into SMTP server.')
+    parser.add_argument('--from-addr', default="ihradis@fit.vutbr.cz", help="Message will be sent from this address (usefull for replies).")
     parser.add_argument('-p', '--password', required=True, help='')
     parser.add_argument('--mail-server', default='smtp.fit.vutbr.cz:465', help='Mail server.')
     parser.add_argument('--subject', default='[semANT] Statistiky Vaseho anotovani', help='Mail subject.')
@@ -36,27 +37,30 @@ def main():
         data = json.loads(line)
         email_address = data['email']
         del data['email']
+        #if not ('xbalca11' in email_address or 'ihradis' in email_address):
+        #    continue
 
         msg = EmailMessage()
         msg['Subject'] = args.subject
-        msg['From'] = args.login
+        msg['From'] = args.from_addr
         msg['To'] = email_address
-        msg['Cc'] = args.login
-        
+        #msg['Cc'] = args.login
+
         data = defaultdict(lambda: '0.00', data)
-    
+
         msg.set_content(template.format_map(data))
 
-        print(msg.get_content())
-
         logging.info(f'EMAIL: {email_address}')
-        logging.info(f'MSGS: {msg}')
+        logging.info(f'DATA: {msg.get_content()}')
 
         with smtplib.SMTP_SSL(args.mail_server) as s:
             s.login(args.login, args.password)
             s.send_message(msg)
+            time.sleep(6)
 
-        time.sleep(10)
+        logging.info(f'===============================================================================================')
+        logging.info(f'===============================================================================================')
+
 
 
 if __name__ == '__main__':

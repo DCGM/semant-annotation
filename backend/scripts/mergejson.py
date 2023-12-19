@@ -8,6 +8,8 @@ def parse_args():
     parser.add_argument('-o', '--output', required=True, help='Destination JSON file.')
     parser.add_argument('-ij', '--input-json-files', nargs='+', required=True, help='Input .json files')
     parser.add_argument('-is', '--input-stats-file', required=True, help='Input .json file from stats.py')
+    parser.add_argument('--from-date', required=True, help='From date.')
+    parser.add_argument('--to-date', required=True, help='To date.')
     return parser.parse_args()
 
 
@@ -40,9 +42,12 @@ def main():
         for line in file:
             data = json.loads(line)
             data_dict[data["email"]] = data
+            data_dict[data["email"]]['from_date'] = args.from_date
+            data_dict[data["email"]]['to_date'] = args.to_date
 
     for file in args.input_json_files:
-        data = get_data_json(file, file[:-5])
+        file_key = file[:-27]
+        data = get_data_json(file, file_key)
         for user in data.keys():
             data_dict[user].update(data[user])
 
