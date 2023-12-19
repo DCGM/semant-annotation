@@ -2,6 +2,7 @@ import json
 import csv
 import argparse
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', required=True, help='Destination JSON file.')
@@ -16,12 +17,20 @@ def get_data_json(file_path, name):
 
     data_to_write = {}
     for key in data.keys():
+        if not data[key]["email"]:
+            if 'Krolop' in data[key]['name']:
+                data[key]["email"] = "xkrolo00@vutbr.cz"
+            elif 'MartinF' in data[key]['name']:
+                data[key]["email"] = "martin.fajcik@vut.cz"
+            else:
+                raise Exception(f'No email for {key}, {data[key]["name"]}')
         dict_to_write = {data[key]["email"] : {"full_name": key,
                          "email": data[key]["email"], 
                          name: round(data[key]["time_spent_thresholded_(h)"], 2)}}
         data_to_write.update(dict_to_write)
         
     return data_to_write 
+
 
 def main():
     args = parse_args()
@@ -31,7 +40,6 @@ def main():
         for line in file:
             data = json.loads(line)
             data_dict[data["email"]] = data
-
 
     for file in args.input_json_files:
         data = get_data_json(file, file[:-5])

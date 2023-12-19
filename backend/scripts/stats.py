@@ -203,10 +203,10 @@ def main():
     tasks = [item for item in tasks if item['active']]
     
     final_list = get_final_list(users, tasks, args.start_date, args.end_date, keypress_time, task_result_url, time_tracking_url, session)
-    field_names = []
-    field_names_dict = max(final_list, key=len)
-    for key in field_names_dict:
-        field_names.append(key)
+    field_names = ()
+    for field_names_dict in final_list:
+        for key in field_names_dict:
+            field_names = field_names + (key,)
 
     with open(args.output + '.jsonl', 'w') as csvfile:
         for item in final_list:
