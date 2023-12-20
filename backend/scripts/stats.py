@@ -158,10 +158,15 @@ def get_final_list(users, tasks, start_date, end_date, keypress_time, task_resul
                       }
         time_all_tasks = 0
         for task in tasks:
+            # add a day for tasks_response query
+            new_end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            new_end_date = new_end_date + timedelta(days=1)
+            new_end_date = new_end_date.strftime("%Y-%m-%d")
+
             data = {
                     "annotation_task_id": task["id"],
                     "from_date": start_date,
-                    "to_date": end_date,
+                    "to_date": new_end_date, 
                     "user_id": user["id"]
                     }
 
@@ -171,6 +176,7 @@ def get_final_list(users, tasks, start_date, end_date, keypress_time, task_resul
             for item in tasks_response:
                 task_timed = time_task(json.loads(item["result"]), item["start_time"], item["end_time"], keypress_time)
                 time_total += task_timed
+
             timed_data[task["name"]] = seconds_to_formatted_hours(time_total)
             time_all_tasks += time_total
         
