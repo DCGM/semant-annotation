@@ -60,7 +60,7 @@
         "email": "519878@mail.muni.cz"
     },
     "\u0160t\u011bp\u00e1n Krej\u010d\u00ed\u0159": {
-        "time_spent_thresholded_(h)": 0.8470469444444447,
+        "time_spent_thresholded_(h)": 0.7334941666666666,
         "time_spent_(h)": 0.8470469444444447,
         "mean_time_per_query(min)": 0.5464818996415772,
         "time_spent_query_quartile1": 18.219,
@@ -100,12 +100,12 @@
         "email": "strakovaelis1@gmail.com"
     },
     "xsando04": {
-        "time_spent_thresholded_(h)": 2.2338769444444457,
-        "time_spent_(h)": 2.2338769444444457,
-        "mean_time_per_query(min)": 0.5878623538011698,
+        "time_spent_thresholded_(h)": 2.074634722222223,
+        "time_spent_(h)": 2.074634722222223,
+        "mean_time_per_query(min)": 0.5459565058479535,
         "time_spent_query_quartile1": 16.53,
         "time_spent_query_quartile2": 24.208,
-        "time_spent_query_quartile3": 33.76475,
+        "time_spent_query_quartile3": 33.6455,
         "mean_time_per_card(s)": 1.7010597275585044,
         "mean_asymmetric_query_length": 12.0,
         "total_queries": 228,
@@ -138,6 +138,26 @@
         "total_fail_cards": 23,
         "name": "xpauli08",
         "email": "xpauli08@stud.fit.vutbr.cz"
+    },
+    "Martin.Kiss": {
+        "time_spent_thresholded_(h)": 0.006876388888888889,
+        "time_spent_(h)": 0.006876388888888889,
+        "mean_time_per_query(min)": 0.13752777777777778,
+        "time_spent_query_quartile1": 6.013999999999999,
+        "time_spent_query_quartile2": 7.64,
+        "time_spent_query_quartile3": 10.1835,
+        "mean_time_per_card(s)": 3.787666666666667,
+        "mean_asymmetric_query_length": null,
+        "total_queries": 3,
+        "total_asymmetric_queries": 0,
+        "total_symmetric_queries": 3,
+        "mean_#cards_per_query": 1.0,
+        "total_cards": 3,
+        "total_relevant_cards": 0,
+        "total_irrelevant_cards": 0,
+        "total_fail_cards": 3,
+        "name": "Martin.Kiss",
+        "email": ""
     },
     "daniela.gajdova": {
         "time_spent_thresholded_(h)": 1.1458805555555556,
@@ -180,12 +200,12 @@
         "email": "548700@muni.cz"
     },
     "Josef \u0160korp\u00edk": {
-        "time_spent_thresholded_(h)": 0.9463763888888889,
-        "time_spent_(h)": 0.9463763888888889,
-        "mean_time_per_query(min)": 0.7279818376068375,
-        "time_spent_query_quartile1": 20.2495,
-        "time_spent_query_quartile2": 32.7575,
-        "time_spent_query_quartile3": 46.726,
+        "time_spent_thresholded_(h)": 0.8529008333333333,
+        "time_spent_(h)": 0.8529008333333333,
+        "mean_time_per_query(min)": 0.6560775641025641,
+        "time_spent_query_quartile1": 19.234750000000002,
+        "time_spent_query_quartile2": 32.638,
+        "time_spent_query_quartile3": 46.489,
         "mean_time_per_card(s)": 4.716493482309124,
         "mean_asymmetric_query_length": null,
         "total_queries": 78,
@@ -460,7 +480,7 @@
         "email": "xschni01@stud.fit.vutbr.cz"
     },
     "julie.konfalova": {
-        "time_spent_thresholded_(h)": 0.8280994444444443,
+        "time_spent_thresholded_(h)": 0.7016205555555554,
         "time_spent_(h)": 0.8280994444444443,
         "mean_time_per_query(min)": 1.211852845528455,
         "time_spent_query_quartile1": 33.971,

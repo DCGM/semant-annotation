@@ -1,7 +1,9 @@
-Statistiky anotací pro Českou AI uživatele {full_name} od {from_date} do {to_date}.
+Snad opravené statistiky anotací pro Českou AI uživatele {full_name} od {from_date} do {to_date} (bez toho posledního dne, tedy vždy od pondělí do neděle).
 
-Pro každou z šesti úloh je uveden čas spočítaný podle vámi zadaných položek ve "Time Tracking" aplikace anotator.semant.cz. Pak je uveden čas, který jsme spočítali podle vaší aktivity našich aplikacích.
-V měření aktivity a sbírání výsledků z aplikací pořád můžeme mít chyby. Pokud si myslíte, že naše měření času podle aktivity neodpovídá skutečnosti, napište s předmětem "[semANT] statistiky anotování" na xbalca11@fit.vutbr.cz (v kopii na ihradis@fit.vutbr.cz). Pokud najdeme nějakou chybu, pošleme vám update statistik.
+Pro každou z šesti úloh je uveden čas spočítaný podle vámi zadaných položek v "Time Tracking" aplikace anotator.semant.cz. Pak je uveden čas, který jsme spočítali podle vaší aktivity našich aplikacích.
+Pokusili jsme se opravit všechny chyby. Pokud si přeci jen myslíte, že naše měření času podle aktivity neodpovídá skutečnosti, napište s předmětem "[semANT] statistiky anotování" na xbalca11@stud.fit.vutbr.cz (v kopii na ihradis@fit.vutbr.cz). Pokud nenajdeme další chyby, pošleme statistky do konce roku.
+
+Do úlohy "Ulice evropských měst" jsme přidali obrázky a úloha je znovu aktivní.
 
 Časy jsou v hodinách.
 
@@ -19,15 +21,15 @@ Naměřený čas:       {Anotace obrázků z historických dokumentů}
  
 Anotace vyhledávání obličejů:
 Vámi uvedený čas:   {Vyhledávání obličejů}
-Naměřený čas:       {statistics/faces/face_stats}
+Naměřený čas:       {stats/faces/face_stats}
  
 Anotace vyhledávání obrázků:
 Vámi uvedený čas:   {Vyhledávání obrázků}
-Naměřený čas:       {statistics/image_search/image_search_stats}
+Naměřený čas:       {stats/image_search/image_search_stats}
 
 Anotace vyhledávání textů:
 Vámi uvedený čas:   {Vyhledávání textů}
-Naměřený čas:       {statistics/text_search/text_search_stats}
+Naměřený čas:       {stats/text_search/text_search_stats}
 
 Anotace pro TextBite:
 Vámi uvedený čas:   {TextBite}

@@ -1,6 +1,6 @@
 {
     "xdzuri00": {
-        "time_spent_thresholded_(h)": 1.7451805555555566,
+        "time_spent_thresholded_(h)": 1.6105680555555564,
         "time_spent_(h)": 1.7451805555555566,
         "mean_time_per_query(min)": 0.7426300236406624,
         "time_spent_query_quartile1": 18.755,
@@ -59,6 +59,26 @@
         "name": "xpauli08",
         "email": "xpauli08@stud.fit.vutbr.cz"
     },
+    "xvasko16": {
+        "time_spent_thresholded_(h)": 0.0059230555555555555,
+        "time_spent_(h)": 0.0059230555555555555,
+        "mean_time_per_query(min)": 0.35538333333333333,
+        "time_spent_query_quartile1": 21.323,
+        "time_spent_query_quartile2": 21.323,
+        "time_spent_query_quartile3": 21.323,
+        "mean_time_per_card(s)": 6.048666666666667,
+        "mean_asymmetric_query_length": null,
+        "total_queries": 1,
+        "total_asymmetric_queries": 0,
+        "total_symmetric_queries": 1,
+        "mean_#cards_per_query": 3.0,
+        "total_cards": 3,
+        "total_relevant_cards": 0,
+        "total_irrelevant_cards": 3,
+        "total_fail_cards": 0,
+        "name": "xvasko16",
+        "email": ""
+    },
     "Anna Ku\u010derov\u00e1": {
         "time_spent_thresholded_(h)": 0.7024900000000002,
         "time_spent_(h)": 0.7024900000000002,
@@ -80,12 +100,12 @@
         "email": "548861@mail.muni.cz"
     },
     "xsajko01": {
-        "time_spent_thresholded_(h)": 9.38657444444444,
-        "time_spent_(h)": 13.511148888888895,
-        "mean_time_per_query(min)": 1.4847416361416366,
-        "time_spent_query_quartile1": 29.9005,
-        "time_spent_query_quartile2": 47.4845,
-        "time_spent_query_quartile3": 80.41525,
+        "time_spent_thresholded_(h)": 9.261131388888883,
+        "time_spent_(h)": 13.385705833333338,
+        "mean_time_per_query(min)": 1.4709566849816857,
+        "time_spent_query_quartile1": 29.873,
+        "time_spent_query_quartile2": 47.331,
+        "time_spent_query_quartile3": 80.25049999999999,
         "mean_time_per_card(s)": 2.7604844336207495,
         "mean_asymmetric_query_length": null,
         "total_queries": 546,

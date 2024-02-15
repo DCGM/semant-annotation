@@ -120,7 +120,7 @@
         "email": "548777@mail.muni.cz"
     },
     "xsajko01": {
-        "time_spent_thresholded_(h)": 2.6283219444444446,
+        "time_spent_thresholded_(h)": 2.4947963888888887,
         "time_spent_(h)": 2.6283219444444446,
         "mean_time_per_query(min)": 1.0875814942528736,
         "time_spent_query_quartile1": 28.476,

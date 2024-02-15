@@ -24,6 +24,10 @@ def get_data_json(file_path, name):
                 data[key]["email"] = "xkrolo00@vutbr.cz"
             elif 'MartinF' in data[key]['name']:
                 data[key]["email"] = "martin.fajcik@vut.cz"
+            elif 'xvasko16' in data[key]['name']:
+                data[key]["email"] = "xvasko16@stud.fit.vutbr.cz"
+            elif 'Kiss' in data[key]['name']:
+                data[key]["email"] = "ikiss@fit.vutbr.cz"
             else:
                 raise Exception(f'No email for {key}, {data[key]["name"]}')
         dict_to_write = {data[key]["email"] : {"full_name": key,
@@ -49,6 +53,9 @@ def main():
         file_key = file[:-27]
         data = get_data_json(file, file_key)
         for user in data.keys():
+            if user not in data_dict:
+                print(f'ERROR: unknown user {user}')
+                continue
             data_dict[user].update(data[user])
 
     with open(args.output, 'w') as file:

@@ -160,7 +160,7 @@ def get_final_list(users, tasks, start_date, end_date, keypress_time, task_resul
         for task in tasks:
             # add a day for tasks_response query
             new_end_date = datetime.strptime(end_date, "%Y-%m-%d")
-            new_end_date = new_end_date + timedelta(days=1)
+            new_end_date = new_end_date + timedelta(days=0)  #add one day
             new_end_date = new_end_date.strftime("%Y-%m-%d")
 
             data = {
@@ -181,7 +181,7 @@ def get_final_list(users, tasks, start_date, end_date, keypress_time, task_resul
             time_all_tasks += time_total
         
         timed_data["all_times"] = seconds_to_formatted_hours(time_all_tasks)
-        user_record = time_tracking_users(session, user, time_tracking_url, start_date + 'T00:00:00', end_date + 'T23:59:59')
+        user_record = time_tracking_users(session, user, time_tracking_url, start_date + 'T00:00:00', end_date + 'T00:00:00') #+ 'T23:59:59')
         merged_dir = timed_data.copy()
         merged_dir.update(user_record)
         list.append(merged_dir)
@@ -207,8 +207,10 @@ def main():
 
     tasks = query_api(task_url, session, None)
     tasks = [item for item in tasks if item['active']]
+
+    end_date = args.end_date
     
-    final_list = get_final_list(users, tasks, args.start_date, args.end_date, keypress_time, task_result_url, time_tracking_url, session)
+    final_list = get_final_list(users, tasks, args.start_date, end_date, keypress_time, task_result_url, time_tracking_url, session)
     field_names = ()
     for field_names_dict in final_list:
         for key in field_names_dict:

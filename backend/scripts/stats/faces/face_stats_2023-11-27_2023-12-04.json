@@ -1,4 +1,24 @@
 {
+    "xvasko16": {
+        "time_spent_thresholded_(h)": 0.025285555555555554,
+        "time_spent_(h)": 0.025285555555555554,
+        "mean_time_per_query(min)": 0.3034266666666666,
+        "time_spent_query_quartile1": 16.043,
+        "time_spent_query_quartile2": 18.204,
+        "time_spent_query_quartile3": 19.831,
+        "mean_time_per_card(s)": 1.1930204081632654,
+        "mean_asymmetric_query_length": null,
+        "total_queries": 5,
+        "total_asymmetric_queries": 0,
+        "total_symmetric_queries": 5,
+        "mean_#cards_per_query": 9.8,
+        "total_cards": 49,
+        "total_relevant_cards": 5,
+        "total_irrelevant_cards": 12,
+        "total_fail_cards": 32,
+        "name": "xvasko16",
+        "email": ""
+    },
     "xdzuri00": {
         "time_spent_thresholded_(h)": 0.4977066666666666,
         "time_spent_(h)": 0.4977066666666666,
