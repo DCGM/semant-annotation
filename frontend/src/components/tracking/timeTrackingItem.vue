@@ -11,6 +11,7 @@
       :rules="['time']"
       class="q-ma-sm"
       label="From"
+      readonly
     >
       <template v-slot:append>
         <q-icon name="access_time" class="cursor-pointer">
@@ -18,6 +19,7 @@
             <q-time
               v-model="timeFrom"
               format24h
+              readonly
             >
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Close" color="primary" flat />
@@ -33,6 +35,7 @@
       :rules="['time']"
       class="q-ma-sm"
       label="To"
+      readonly
     >
       <template v-slot:append>
         <q-icon name="access_time" class="cursor-pointer">
@@ -40,6 +43,7 @@
             <q-time
               v-model="timeTo"
               format24h
+              readonly
             >
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Close" color="primary" flat />
