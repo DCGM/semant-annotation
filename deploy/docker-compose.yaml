@@ -1,0 +1,33 @@
+services:
+  semant_annotation_demo:
+    restart: always
+    build:
+      context: .
+      target: backend
+      dockerfile: Dockerfile
+      args:
+        - id=$id
+        - backend_url=$backend_url
+        - repo=$repo
+        - branch=$branch
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: $db_host
+      POSTGRES_PORT: $db_port
+      POSTGRES_DB: $db_name
+      POSTGRES_USER: $db_user
+      POSTGRES_PASSWORD: $db_passwd
+    depends_on:
+      - postgres
+    ports:
+      - "$local_port:$local_port"
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: $db_name
+      POSTGRES_USER: $db_user
+      POSTGRES_PASSWORD: $db_passwd
+    ports:
+      - "$db_port:$db_port"
