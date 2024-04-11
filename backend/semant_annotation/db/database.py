@@ -10,6 +10,7 @@ async_session_maker = None
 
 async def init_db() -> None:
     from . import Base
+    print('SQLALCHEMY_DATABASE_URL', config.SQLALCHEMY_DATABASE_URL)
     local_engine = create_async_engine(config.SQLALCHEMY_DATABASE_URL)
     async with local_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
