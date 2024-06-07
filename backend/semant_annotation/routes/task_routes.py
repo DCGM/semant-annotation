@@ -53,6 +53,12 @@ async def delete_task(task_id: UUID,
     await crud_general.delete_obj(db, task_id, model.AnnotationTask)
 
 
+@task_route.get("/types/", response_model=List[base_objects.AnnotationResultType], tags=["Task"])
+async def get_types(
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+    return [type_.value for type_ in base_objects.AnnotationResultType]
+
+
 @task_route.post("/subtask", tags=["Task"])
 async def new_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
@@ -109,8 +115,22 @@ async def update_task_instance_result(task_instance_result: base_objects.Annotat
 @task_route.post("/results", response_model=List[base_objects.AnnotationTaskResult], tags=["Task"])
 async def get_task_instance_result(query: base_objects.AnnotationTaskResultQuery,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    return await crud_task.get_task_instance_results(db, query.annotation_task_id, query.user_id,
+    
+    offset = (query.page - 1) * query.page_size
+    print(offset)
+    return await crud_task.get_task_instance_results(db, query.annotation_task_id, offset, query.page_size, query.user_id,
                                                      query.from_date, query.to_date)
+
+@task_route.post("/results/count", response_model=int, tags=["Task"])
+async def get_task_instance_results_count(query: base_objects.AnnotationTaskResultQuery,
+        user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    try:
+        count = await crud_task.get_task_instance_results_count(db, query.annotation_task_id, query.user_id,
+                                                                query.from_date, query.to_date)
+        return count
+    except DBError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 
 
 @task_route.post("/result_times", response_model=List[base_objects.SimplifiedAnnotationTaskResult], tags=["Task"])
@@ -121,6 +141,8 @@ async def get_task_instance_result_times(query: base_objects.AnnotationTaskResul
     return await crud_task.get_task_instance_result_times(db, query.annotation_task_id, query.user_id,
                                                      query.from_date, query.to_date)
 
+                                                     
+
 async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
     path = os.path.join(config.UPLOADED_IMAGES_FOLDER, str(task_id))
     if make_dir:
@@ -129,7 +151,7 @@ async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
 
 
 @task_route.get("/image/{task_id}/{image_id}", tags=["Task"])
-async def get_image(task_id: UUID, image_id: UUID,
+async def get_image(task_id: UUID, image_id: UUID, 
         user_token: TokenData = Depends(get_current_user)):
     path = await get_image_path(image_id=image_id, task_id=task_id, make_dir=False)
     if not os.path.exists(path):
