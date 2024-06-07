@@ -1,7 +1,7 @@
 import logging
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import exc, select, or_, update
+from sqlalchemy import exc, select, or_, update, func
 from .database import DBError
 from . import model
 from semant_annotation.schemas import base_objects
@@ -71,7 +71,7 @@ async def get_task_instance_random(db: AsyncSession, task_id: UUID, result_count
         raise DBError(f'Failed fetching task instance from database.')
 
 
-async def get_task_instance_results(db: AsyncSession, task_id: UUID, user_id: UUID=None, from_date: datetime=None,
+async def get_task_instance_results(db: AsyncSession, task_id: UUID, page_size: int, user_id: UUID=None, from_date: datetime=None, 
                                     to_date: datetime=None) -> base_objects.AnnotationTaskResult:
     try:
         async with db.begin():
@@ -83,30 +83,40 @@ async def get_task_instance_results(db: AsyncSession, task_id: UUID, user_id: UU
                 stmt = stmt.where(model.AnnotationTaskResult.created_date >= from_date)
             if to_date:
                 stmt = stmt.where(model.AnnotationTaskResult.created_date <= to_date)
+
             result = await db.execute(stmt)
             db_task_instance_result = result.scalars().all()
+
             return [base_objects.AnnotationTaskResult.model_validate(db_task_instance_result) for db_task_instance_result in db_task_instance_result]
     except exc.SQLAlchemyError as e:
         logging.error(str(e))
         raise DBError(f'Failed fetching task instance result from database.')
 
-
 async def get_task_instance_result_times(db: AsyncSession, task_id: UUID = None, user_id: UUID=None, from_date: datetime=None,
-                                    to_date: datetime=None) -> base_objects.SimplifiedAnnotationTaskResult:
+                                    to_date: datetime=None, result_type: base_objects.AnnotationResultType=None) -> base_objects.SimplifiedAnnotationTaskResult:
     try:
         async with db.begin():
-            stmt = select(model.AnnotationTaskResult.start_time,
+            stmt = select(model.AnnotationTaskInstance.annotation_task_id,  # Include annotation_task_id in the select clause
+                          model.AnnotationTaskResult.start_time,
                           model.AnnotationTaskResult.end_time,
                           model.AnnotationTaskResult.result_type,
                           model.AnnotationTaskResult.user_id)
+
+
             if task_id:
                 stmt = stmt.join(model.AnnotationTaskInstance).where(model.AnnotationTaskInstance.annotation_task_id == task_id)
+            else:
+                stmt = stmt.join(model.AnnotationTaskInstance)
+
             if user_id:
                 stmt = stmt.where(model.AnnotationTaskResult.user_id == user_id)
+            if result_type:
+                stmt = stmt.where(model.AnnotationTaskResult.result_type == result_type)
             if from_date:
                 stmt = stmt.where(model.AnnotationTaskResult.created_date >= from_date)
             if to_date:
                 stmt = stmt.where(model.AnnotationTaskResult.created_date <= to_date)
+            
             result = await db.execute(stmt.distinct())
             db_task_instance_result = result.all()
             return [base_objects.SimplifiedAnnotationTaskResult.model_validate(db_task_instance_result) for db_task_instance_result in db_task_instance_result]

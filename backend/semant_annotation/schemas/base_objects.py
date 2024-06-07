@@ -108,6 +108,7 @@ class SimplifiedAnnotationTaskResult(BaseModel):
     end_time: datetime
     result_type: AnnotationResultType
     user_id: UUID
+    annotation_task_id: UUID
 
     class Config:
         from_attributes = True
@@ -136,6 +137,14 @@ class AnnotationTaskResultQuery(BaseModel):
     from_date: date = None
     to_date: date = None
     user_id: UUID = None
+
+
+class AnnotationTaskResultQueryStats(BaseModel):
+    annotation_task_id: UUID = None
+    from_date: date = None
+    to_date: date = None
+    user_id: UUID = None
+    result_type: AnnotationResultType = None
 
 
 class TimeTrackingItemNew(BaseModel):

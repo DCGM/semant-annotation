@@ -1,6 +1,6 @@
 import logging
 
-import requests
+#import requests
 import argparse
 import json
 import sys
@@ -182,47 +182,47 @@ def get_final_list(users, tasks, start_date, end_date, keypress_time, task_resul
 
     return list
         
-
-def main():
-    args = parse_args()
-    keypress_time = int(args.keypress_time)
-
-    login_url = urljoin(args.api_url, 'token')
-    user_url = urljoin(args.api_url, 'user/')
-    task_url = urljoin(args.api_url, 'task/task')
-    task_result_url = urljoin(args.api_url, 'task/results')
-    time_tracking_url = urljoin(args.api_url, 'time_tracking/time_tracking')
-
-    session = requests.Session()
-
-    session = get_session(login_url, session, args.login, args.password)
-    
-    users = query_api(user_url, session, None)
-
-    tasks = query_api(task_url, session, None)
-    tasks = [item for item in tasks if item['active']]
-    
-    final_list = get_final_list(users, tasks, args.start_date, args.end_date, keypress_time, task_result_url, time_tracking_url, session)
-    field_names = []
-    field_names_dict = max(final_list, key=len)
-    for key in field_names_dict:
-        field_names.append(key)
-
-    with open(args.output + '.jsonl', 'w') as csvfile:
-        for item in final_list:
-            csvfile.write(json.dumps(item) + '\n')
-
-    with open(args.output + '.csv', 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=field_names)
-        writer.writeheader() 
-        writer.writerows(final_list) 
-
-    if args.export_blocks:
-        time_blocks_list = get_time_blocks_list(session, users, time_tracking_url, args.start_date, args.end_date)
-        with open(args.output + '_time_blocks.jsonl', 'w') as jsonfile:
-            for item in time_blocks_list:
-                jsonfile.write(json.dumps(item) + '\n')
-    
-
-if __name__ == '__main__':
-    main()
+#def main():
+#    args = parse_args()
+#    keypress_time = int(args.keypress_time)
+#
+#    login_url = urljoin(args.api_url, 'token')
+#    user_url = urljoin(args.api_url, 'user/')
+#    task_url = urljoin(args.api_url, 'task/task')
+#    task_result_url = urljoin(args.api_url, 'task/results')
+#    time_tracking_url = urljoin(args.api_url, 'time_tracking/time_tracking')
+#
+#    session = requests.Session()
+#
+#    session = get_session(login_url, session, args.login, args.password)
+#    
+#    users = query_api(user_url, session, None)
+#
+#    tasks = query_api(task_url, session, None)
+#    tasks = [item for item in tasks if item['active']]
+#    
+#    final_list = get_final_list(users, tasks, args.start_date, args.end_date, keypress_time, task_result_url, time_tracking_url, session)
+#    field_names = []
+#    field_names_dict = max(final_list, key=len)
+#    for key in field_names_dict:
+#        field_names.append(key)
+#
+#    with open(args.output + '.jsonl', 'w') as csvfile:
+#        for item in final_list:
+#            csvfile.write(json.dumps(item) + '\n')
+#
+#    with open(args.output + '.csv', 'w') as csvfile:
+#        writer = csv.DictWriter(csvfile, fieldnames=field_names)
+#        writer.writeheader() 
+#        writer.writerows(final_list) 
+#
+#    if args.export_blocks:
+#        time_blocks_list = get_time_blocks_list(session, users, time_tracking_url, args.start_date, args.end_date)
+#        with open(args.output + '_time_blocks.jsonl', 'w') as jsonfile:
+#            for item in time_blocks_list:
+#                jsonfile.write(json.dumps(item) + '\n')
+#    
+#
+#if __name__ == '__main__':
+#    main()
+#

@@ -4,6 +4,7 @@ from fastapi import Depends, UploadFile, HTTPException
 from fastapi.responses import FileResponse
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from scripts.stats import get_final_list
 
 from . import task_route
 
@@ -51,6 +52,12 @@ async def update_task(task: base_objects.AnnotationTaskUpdate,
 async def delete_task(task_id: UUID,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
     await crud_general.delete_obj(db, task_id, model.AnnotationTask)
+
+
+@task_route.get("/types/", response_model=List[base_objects.AnnotationResultType], tags=["Task"])
+async def get_types(
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+    return [type_.value for type_ in base_objects.AnnotationResultType]
 
 
 @task_route.post("/subtask", tags=["Task"])
@@ -109,17 +116,22 @@ async def update_task_instance_result(task_instance_result: base_objects.Annotat
 @task_route.post("/results", response_model=List[base_objects.AnnotationTaskResult], tags=["Task"])
 async def get_task_instance_result(query: base_objects.AnnotationTaskResultQuery,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
-    return await crud_task.get_task_instance_results(db, query.annotation_task_id, query.user_id,
+    
+    return await crud_task.get_task_instance_results(db, query.annotation_task_id, query.page_size, query.user_id,
                                                      query.from_date, query.to_date)
-
 
 @task_route.post("/result_times", response_model=List[base_objects.SimplifiedAnnotationTaskResult], tags=["Task"])
-async def get_task_instance_result_times(query: base_objects.AnnotationTaskResultQuery,
+async def get_task_instance_result_times(query: base_objects.AnnotationTaskResultQueryStats,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+
     if not user_token.trusted_user and user_token.user_id != query.user_id:
         raise HTTPException(status_code=403, detail="You can only access your own statistics.")
-    return await crud_task.get_task_instance_result_times(db, query.annotation_task_id, query.user_id,
-                                                     query.from_date, query.to_date)
+    
+    result = await crud_task.get_task_instance_result_times(db, query.annotation_task_id, query.user_id,
+                                                            query.from_date, query.to_date, query.result_type)
+    return result
+
+                                                     
 
 async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
     path = os.path.join(config.UPLOADED_IMAGES_FOLDER, str(task_id))
@@ -129,7 +141,7 @@ async def get_image_path(image_id: UUID, task_id: UUID, make_dir: bool = True):
 
 
 @task_route.get("/image/{task_id}/{image_id}", tags=["Task"])
-async def get_image(task_id: UUID, image_id: UUID,
+async def get_image(task_id: UUID, image_id: UUID, 
         user_token: TokenData = Depends(get_current_user)):
     path = await get_image_path(image_id=image_id, task_id=task_id, make_dir=False)
     if not os.path.exists(path):

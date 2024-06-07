@@ -76,7 +76,7 @@
                     :class="{ 'drawer-item-selected': currentRoute.startsWith('/annotation_statistics') }"
                     v-ripple clickable>
               <q-item-section avatar>
-                <q-icon name="fa-solid fa-book" />
+                <q-icon name="fa-solid fa-chart-simple"></q-icon>
               </q-item-section>
               <q-item-section>
                 <q-item-label>Annotation statistics</q-item-label>
