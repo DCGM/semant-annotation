@@ -220,7 +220,6 @@ const rows = computed(() => {
 
     rows.push(row);
   }
-  console.log("ahoj")
   //console.log(rows);
   return rows;
 });
@@ -230,12 +229,10 @@ onMounted(async () => {
   results.value = [];
   await loadTasks();
   await loadUsers();
-  console.log(tasks.value);
-  console.log(users.value);
 });
 
 
-watch([selected_task, selected_user], async ([newTask, newUser]) => {
+watch([selected_task, selected_user, from_date, to_date], async ([newTask, newUser]) => {
   if (newTask) {
     await loadInitialResults();
   } else {
@@ -296,9 +293,7 @@ async function loadResults () {
     if (to_date.value) {
       query['to_date'] = to_date.value;
     }
-
-    console.log("kulo")
-
+    
     const newResults = await api
       .post('/task/results', query)
       .then((res) => res.data);
@@ -342,25 +337,4 @@ async function loadResults () {
     Loading.hide();
   }
 }
-
-
-
-
-
-/*    <q-table
-      v-if="results"
-      :data="results"
-      :columns="columns"
-      row-key="id"
-      :loading="loading"
-      :rows-per-page-options="[10, 20, 50]"
-      :pagination="pagination"
-      :filter="filter"
-      :selected-rows-label="getSelectedString"
-      selection="multiple"
-      @filter="updateFilter"
-      @request="updateRequest"
-      @selection="updateSelection"
-    />
-*/
 </script>
