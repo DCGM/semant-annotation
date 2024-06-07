@@ -1,1 +1,44 @@
 // app global css in SCSS form
+
+.my-sticky-header-column-table {
+  height: 500px;
+  overflow: auto;
+
+  td:first-child {
+    background-color: $primary;
+    color: white;
+    z-index: 1;
+    position: sticky;
+    left: 0;
+  }
+
+  tr th {
+    position: sticky;
+    z-index: 2;
+    background:  $primary;
+    color: white;
+    top: 0;
+  }
+
+  tr:first-child th:first-child {
+    z-index: 3;
+  }
+
+  th:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+  }
+
+  tr:nth-child(2) th {
+    top: 48px;
+  }
+
+  tr:first-child {
+    background-color: #d3d3d3;
+  }
+}
+
+.q-page {
+  overflow: auto;
+}

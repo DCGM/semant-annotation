@@ -8,6 +8,13 @@ export interface User {
   disabled: boolean
 }
 
+
+export enum AnnotationResultType {
+  NEW = 'new',
+  CORRECTION = 'correction',
+  REJECTED = 'rejected'
+}
+
 export interface UserWithPassword extends User {
   password: string
 }
@@ -83,6 +90,7 @@ export class SimplifiedAnnotationTaskResult{
   result_type = ''
   start_time = ''
   end_time = ''
+  annotation_task_id = ''
 }
 
 
