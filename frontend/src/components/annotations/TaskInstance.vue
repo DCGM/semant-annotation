@@ -17,23 +17,24 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, defineProps, ref, onBeforeMount } from 'vue';
-import { uid, Loading } from 'quasar';
+import { ref, onBeforeMount, defineProps } from 'vue';
+import { Loading } from 'quasar';
 import { AnnotationTaskInstance } from 'src/models';
 import { api, apiURL } from 'src/boot/axios';
 import { useErrorStore } from 'src/stores/error';
 
-const errorStore = useErrorStore();
+interface Props {
+  taskInstanceId: string;
+}
 
+const props = defineProps<Props>();
+const errorStore = useErrorStore();
 const taskInstance = ref<AnnotationTaskInstance | null>(null);
 
-defineComponent({
-  name: 'AnnotationPage',
-});
 
 onBeforeMount(async () => {
   try {
-    // /api/task/task_instance_random/:task_id/:result_count
+    Loading.show();
     taskInstance.value = await api
       .get(`/task/task_instance/${props.taskInstanceId}/`)
       .then((response) => response.data);
@@ -47,10 +48,4 @@ onBeforeMount(async () => {
     Loading.hide();
   }
 });
-
-interface Props {
-  taskInstanceId: string;
-}
-
-const props = defineProps<Props>();
 </script>
