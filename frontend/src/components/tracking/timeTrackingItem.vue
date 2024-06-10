@@ -90,7 +90,6 @@ defineComponent({
 
 const emit = defineEmits(['delete'])
 
-
 interface Props {
   timeEntry: TimeTrackingItem
 }
@@ -103,15 +102,14 @@ const itemDate = computed(() => {
 })
 
 const timeFrom = computed(() => {
-  const date = new Date(props.timeEntry.start_time);
-  const options = { timeZone: 'Europe/Prague', hour12: false, hour: '2-digit', minute: '2-digit' };
-  return date.toLocaleString('en-US', options);
-});
+  const date = new Date(props.timeEntry.start_time)
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+})
+
 
 const timeTo = computed(() => {
   const date = new Date(props.timeEntry.end_time)
-  const options = { timeZone: 'Europe/Prague', hour12: false, hour: '2-digit', minute: '2-digit' };
-  return date.toLocaleString('en-US', options);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 })
 
 const duration = computed(() => {
@@ -126,7 +124,5 @@ const duration = computed(() => {
 const task = computed(() => {
   return props.timeEntry.task
 })
-
-
 
 </script>
