@@ -8,8 +8,8 @@
     
     <q-btn v-if="!timerRunning" label="Start" color="primary" class="q-ma-sm" @click="startTimer" />
     <q-btn v-if="timerRunning" label="Finish" color="negative" class="q-ma-sm" @click="finish" />
-    <q-btn v-if="timerRunning" label="STOP" color="primary" class="q-ma-sm" @click="stopTimer" />
-    <q-btn type="submit" label="Add" color="primary" class="q-ma-sm" @click="submitForm" :disable="!isValidForm" />
+    <q-btn v-if="timerRunning" label="Discard" color="primary" class="q-ma-sm" @click="stopTimer" />
+    <q-btn v-if="!timerRunning" type="submit" label="Add" color="primary" class="q-ma-sm" @click="submitForm" :disable="!isValidForm" />
   </q-card>
 </template>
 

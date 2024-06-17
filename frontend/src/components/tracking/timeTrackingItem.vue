@@ -6,55 +6,6 @@
              type="date"
              class="q-ma-sm" readonly />
     <q-input
-      v-model="timeFrom"
-      mask="time"
-      :rules="['time']"
-      class="q-ma-sm"
-      label="From"
-      readonly
-    >
-      <template v-slot:append>
-        <q-icon name="access_time" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-time
-              v-model="timeFrom"
-              format24h
-              readonly
-            >
-              <div class="row items-center justify-end">
-                <q-btn v-close-popup label="Close" color="primary" flat />
-              </div>
-            </q-time>
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
-    <q-input
-      v-model="timeTo"
-      mask="time"
-      :rules="['time']"
-      class="q-ma-sm"
-      label="To"
-      readonly
-    >
-      <template v-slot:append>
-        <q-icon name="access_time" class="cursor-pointer">
-          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-            <q-time
-              v-model="timeTo"
-              format24h
-              readonly
-            >
-              <div class="row items-center justify-end">
-                <q-btn v-close-popup label="Close" color="primary" flat />
-              </div>
-            </q-time>
-          </q-popup-proxy>
-        </q-icon>
-      </template>
-    </q-input>
-    <!--
-    <q-input
              v-model="timeFrom"
              label="From"
              type="time" class="q-ma-sm" readonly />
@@ -65,7 +16,6 @@
     <q-input
              v-model="task"
              label="Project" class="q-ma-sm" readonly />
-             -->
 
     <!-- Read only field showing computed duration -->
     <q-input

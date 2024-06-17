@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { TimeTrackingItemNew } from 'src/models';
 export const useTimerStore = defineStore('timer', () => {
   const timerRunning = ref(false);
   const selectedDate = ref('');
@@ -18,10 +17,6 @@ export const useTimerStore = defineStore('timer', () => {
     timeTo.value = formatTime(currentTime);
     selectedProject.value = project;
     timerRunning.value = true;
-  }
-  const timeEntries = ref<TimeTrackingItemNew[]>([]);
-  function addTimeEntry(entry: TimeTrackingItemNew) {
-    timeEntries.value.push(entry);
   }
 
   function stopTimer() {
@@ -55,6 +50,5 @@ export const useTimerStore = defineStore('timer', () => {
     startTimer,
     stopTimer,
     calculateDuration,
-    addTimeEntry,
   };
 });
