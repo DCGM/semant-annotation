@@ -56,6 +56,7 @@ async def delete_task(task_id: UUID,
 @task_route.post("/subtask", tags=["Task"])
 async def new_subtask(subtask: base_objects.AnnotationSubtaskUpdate,
         user_token: TokenData = Depends(get_current_admin), db: AsyncSession = Depends(get_async_session)):
+    
     await crud_general.new(db, subtask, model.AnnotationSubtask)
 
 
@@ -81,6 +82,17 @@ async def update_task_instance(task_instance: base_objects.AnnotationTaskInstanc
 async def get_task_instance(task_id: UUID, result_count_new: int, result_count_correction: int,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
     task = await crud_task.get_task_instance_random(db, task_id, result_count_new, result_count_correction)
+
+    if task is None:
+        raise HTTPException(status_code=404, detail="No task instance available.")
+    return task
+
+@task_route.get("/task_instance_annot_random/{task_instance_id}", response_model=base_objects.AnnotationTaskResult, tags=["Task"])
+async def get_task_instance(task_instance_id: UUID,
+        user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
+
+    task = await crud_task.get_task_instance_annot_random(db, task_instance_id)
+
     if task is None:
         raise HTTPException(status_code=404, detail="No task instance available.")
     return task
@@ -171,5 +183,4 @@ async def upload_image(task_id: UUID, file: UploadFile,
         file.file.close()
 
     return {"message": f"Successfully uploaded {file.filename}"}
-
 
