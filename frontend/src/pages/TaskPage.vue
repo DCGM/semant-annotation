@@ -35,7 +35,8 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Annotate" color="primary" @click="annotate(task)" />
-          <q-btn flat label="Correct" color="primary" @click="correct(task)" />
+          <q-btn v-if="task.correction"
+          flat label="Correct" color="primary" @click="correct(task)" />
           <q-btn flat label="Info" color="primary" @click="taskInfoDialog = true; selectedTask = task" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Upload images" color="secondary" @click="uploadImages(task)" />

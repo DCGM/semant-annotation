@@ -25,7 +25,12 @@ async def store_task_instance_result(db, task_instance_result: base_objects.Anno
             #     stmt = stmt.values({'result_count_correction': model.AnnotationTaskInstance.result_count_correction + 1})
             #     await db.execute(stmt)
             stmt = update(model.AnnotationTaskInstance).where(model.AnnotationTaskInstance.id == task_instance_result.annotation_task_instance_id)
-            stmt = stmt.values({'result_count_new': model.AnnotationTaskInstance.result_count_new + 1})
+            
+            if(task_instance_result.result_type == base_objects.AnnotationResultType.NEW):  
+                stmt = stmt.values({'result_count_new': model.AnnotationTaskInstance.result_count_new + 1})
+            else:
+                stmt = stmt.values({'result_count_correction': model.AnnotationTaskInstance.result_count_correction + 1})
+
             await db.execute(stmt)
 
             db_task_instance_result = model.AnnotationTaskResult(**task_instance_result.model_dump())
@@ -37,6 +42,7 @@ async def store_task_instance_result(db, task_instance_result: base_objects.Anno
 
 def base_select_random_instance(task_id: UUID, result_count_new: int, result_count_correction: int, time_delta: timedelta, random_number: int, greater_or_equal: bool) -> select:
     stmt = select(model.AnnotationTaskInstance).filter(model.AnnotationTaskInstance.annotation_task_id == task_id)
+    
     if result_count_correction >= 0:
         stmt = stmt.filter(model.AnnotationTaskInstance.result_count_correction == result_count_correction)
     if result_count_new >= 0:
@@ -47,6 +53,7 @@ def base_select_random_instance(task_id: UUID, result_count_new: int, result_cou
         stmt = stmt.filter(model.AnnotationTaskInstance.random_number >= random_number)
     else:
         stmt = stmt.filter(model.AnnotationTaskInstance.random_number < random_number)
+    
     return stmt.limit(1).with_for_update()
 
 
@@ -62,6 +69,7 @@ async def get_task_instance_random(db: AsyncSession, task_id: UUID, result_count
                 stmt = base_select_random_instance(task_id, result_count_new, result_count_correction, time_delta, random_number, False)
                 result = await db.execute(stmt)
                 db_task_instance = result.scalar_one_or_none()
+            
             if not db_task_instance:
                 return None
             db_task_instance.last_send_send_to_user = datetime.now()
@@ -119,12 +127,9 @@ async def get_task_instance_annot_random(db: AsyncSession, annotation_task_insta
     time_delta = timedelta(minutes=10)
     try:
         async with db.begin():
-            stmt = select(model.AnnotationTaskResult).where(model.AnnotationTaskResult.annotation_task_instance_id == annotation_task_instance_id)
-            
-            stmt = stmt.limit(1).with_for_update()
-            
+            stmt = select(model.AnnotationTaskResult).where(model.AnnotationTaskResult.annotation_task_instance_id == annotation_task_instance_id).order_by(model.AnnotationTaskResult.last_change.desc()).limit(1)            
+            stmt = stmt.limit(1)#.with_for_update()
             result = await db.execute(stmt)
-
             db_task_instance_result = result.scalar_one_or_none()
            
             return  base_objects.AnnotationTaskResult.model_validate(db_task_instance_result)
@@ -132,3 +137,4 @@ async def get_task_instance_annot_random(db: AsyncSession, annotation_task_insta
     except exc.SQLAlchemyError as e:
         logging.error(str(e))
         raise DBError(f'Failed fetching task instance from database.')
+    

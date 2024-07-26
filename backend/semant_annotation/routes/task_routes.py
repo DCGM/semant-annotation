@@ -82,7 +82,7 @@ async def update_task_instance(task_instance: base_objects.AnnotationTaskInstanc
 async def get_task_instance(task_id: UUID, result_count_new: int, result_count_correction: int,
         user_token: TokenData = Depends(get_current_user), db: AsyncSession = Depends(get_async_session)):
     task = await crud_task.get_task_instance_random(db, task_id, result_count_new, result_count_correction)
-
+    
     if task is None:
         raise HTTPException(status_code=404, detail="No task instance available.")
     return task
