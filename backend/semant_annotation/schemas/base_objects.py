@@ -74,6 +74,7 @@ class AnnotationTaskUpdate(BaseModel):
     name: str
     description: str
     active: bool = False
+    correction: bool = False
 
 
 class AnnotationTask(AnnotationTaskUpdate):
@@ -92,7 +93,6 @@ class AnnotationTaskInstanceUpdate(BaseModel):
     text: str
     instance_metadata: str
     active: bool
-
 
 class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
     created_date: datetime
@@ -153,4 +153,3 @@ class TimeTrackingItem(TimeTrackingItemNew):
 
     class Config:
         from_attributes = True
-

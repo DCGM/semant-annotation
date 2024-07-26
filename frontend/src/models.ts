@@ -44,6 +44,7 @@ export class AnnotationTaskUpdate {
   name = ''
   description = ''
   active = false
+  correction = false
 }
 
 export class AnnotationTask extends AnnotationTaskUpdate {
@@ -119,4 +120,3 @@ export interface TextResponse {
 export  type TextResponses = TextResponse[]
 
 export type SubtaskResponses = { [id: string] : TextResponses; }
-

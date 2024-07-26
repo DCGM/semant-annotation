@@ -9,7 +9,7 @@
           <span class="text-h6 q-ml-md">
             {{ annotationTask?.name }}
           </span>
-          <q-btn color="primary q-ml-md" label="DONE" @click="submitResponse('new')" />
+          <q-btn color="primary q-ml-md" label="DONE" @click="submitResponse('correction')" />
 
         </q-toolbar-title>
         <q-btn flat label="Task Info" color="primary" @click="taskInfoDialog = true" />
@@ -42,10 +42,9 @@
         </q-card-section>
       </q-card>
     </div>
-    <div class="row q-gutter-md q-mt-md q-px-md">
+    <div v-if="instanceResults" class="row q-gutter-md q-mt-md q-px-md" >
       <!-- Subtqasks -->
-
-      <SubtaskResponse v-for="subtask in relevantSubtasks" :key="subtask.id" :subtask="subtask"
+      <CorrectionSubtaskResponse  v-for="subtask in relevantSubtasks" :key="subtask.id" :subtask="subtask" :instanceResults="instanceResults"
                        @responseUpdate="subtaskResponseUpdate(subtask.id, $event)" ref="subtaskResponsesRefs" />
     </div>
     <TaskInfo v-if="annotationTask" v-model="taskInfoDialog" :task="annotationTask" />
@@ -66,6 +65,7 @@ import { useErrorStore } from 'src/stores/error'
 import TaskInfo from 'src/components/annotations/TaskInfo.vue'
 import SubtaskResponse from 'src/components/annotations/SubtaskResponse.vue'
 import { TextResponse, SubtaskResponses } from 'src/models'
+import CorrectionSubtaskResponse from 'src/components/annotations/CorrectionSubtaskResponse.vue'
 
 const errorStore = useErrorStore()
 const userStore = useUserStore()
@@ -77,11 +77,20 @@ const textReponseCount = 10
 
 const annotationTask = ref<AnnotationTask | null>(null)
 const taskInstance = ref<AnnotationTaskInstance | null>(null)
+const instanceResults = ref<AnnotationTaskResult | null>(null)
 
 const subtaskResponsesRefs = ref<SubtaskResponses[]>([])
 
 let startTime = new Date().toISOString()
 
+const getResultTypeStyle = (resultType: 'rejected' | 'new' | 'correction') => {
+  const styles = {
+    rejected: { color: 'red', 'font-weight': 'bold' },
+    new: { color: 'green', 'font-weight': 'bold' },
+    correction: { color: 'yellow', 'font-weight': 'bold' },
+  };
+  return styles[resultType] || {};
+};
 
 const subtaskResponses = ref<SubtaskResponses>({})
 
@@ -117,7 +126,7 @@ const relevantSubtasks = computed(() => {
   return subtasks
 })
 
-async function submitResponse (resultType = 'new') {
+async function submitResponse (resultType = 'correction') {
   if (taskInstance.value === null) {
     return
   }
@@ -137,6 +146,7 @@ async function submitResponse (resultType = 'new') {
       result_type: resultType
     }
     await api.post('/task/task_instance_result', resultData)
+    
     await getNextAnnotationTaskInstance()
   } catch (error) {
     errorStore.reportError('Error', 'Failed to submit annotation task result', error)
@@ -166,14 +176,16 @@ async function getNextAnnotationTaskInstance () {
     return
   }
   taskInstance.value = null
+  instanceResults.value = null
+  
   Loading.show({ delay: 300 })
   try {
     // /api/task/task_instance_random/:task_id/:result_count
-    taskInstance.value = await api.get(`/task/task_instance_random/${route.params.task_id}/0/-1`).then(response => response.data)
-    for (const subtaskElement of subtaskResponsesRefs.value) {
-      subtaskElement.clear()
-    }
+    taskInstance.value = await api.get(`/task/task_instance_random/${route.params.task_id}/1/-1`).then(response => response.data)
+    instanceResults.value = await api.get(`/task/task_instance_annot_random/${taskInstance.value?.id}`).then(response => response.data)
+    
     startTime = new Date().toISOString()
+    
   } catch (error) {
     errorStore.reportError('Error', 'Failed to load annotation task instance', error)
     router.push('/annotation_tasks')

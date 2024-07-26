@@ -9,11 +9,13 @@
       </q-toolbar>
     </q-page-sticky>
     <div class="row q-gutter-md q-mt-md q-px-md">
-      <q-card class="q-pa-md" v-for="task in tasksToShow" :key="task.id" style="max-width: 600px; width: 100%;">
+      <q-card class="q-pa-md" v-for="task in tasksToShow" :key="task.id" style="max-width: 650px; width: 100%;">
         <q-card-section  >
           <div class="text-h6">
             {{ task.name }}
-            <span v-if="userStore.user && userStore.user.trusted && !task.active" class="text-primary">(INACTIVE)</span>
+            <span v-if="userStore.user && userStore.user.trusted && task.correction && !task.active" class="text-primary">(INACTIVE, CORRECTION)</span>
+            <span v-else-if="userStore.user && userStore.user.trusted && !task.active" class="text-primary">(INACTIVE)</span>
+            <span v-else-if="userStore.user && userStore.user.trusted && task.correction" class="text-primary">(CORRECTION)</span>
           </div>
           <div class="text-subtitle2">
             <span v-for="subtask in task.subtasks" :key="subtask.id">
@@ -33,6 +35,8 @@
 
         <q-card-actions align="right">
           <q-btn flat label="Annotate" color="primary" @click="annotate(task)" />
+          <q-btn v-if="task.correction"
+          flat label="Correct" color="primary" @click="correct(task)" />
           <q-btn flat label="Info" color="primary" @click="taskInfoDialog = true; selectedTask = task" />
           <q-btn v-if="userStore.user && userStore.user.trusted"
             flat label="Upload images" color="secondary" @click="uploadImages(task)" />
@@ -111,6 +115,10 @@ function openDeleteDialog (task: AnnotationTask) {
 
 function annotate(task: AnnotationTask) {
   router.push('/annotation_tasks/' + task.id)
+}
+
+function correct(task: AnnotationTask) {
+  router.push('/correction_tasks/' + task.id)
 }
 
 async function deleteTask(task: AnnotationTask) {
