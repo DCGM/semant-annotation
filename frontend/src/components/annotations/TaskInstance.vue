@@ -35,7 +35,7 @@ onBeforeMount(async () => {
   try {
     // /api/task/task_instance_random/:task_id/:result_count
     taskInstance.value = await api
-      .get(`/task/task_instance/${props.taskInstanceId}/`)
+      .get(`/task/task_instance/${props.taskInstanceId}`)
       .then((response) => response.data);
   } catch (error) {
     errorStore.reportError(

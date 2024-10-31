@@ -72,7 +72,7 @@ async function onSubmit () {
     const id = uid()
     const user: UserWithPassword = { id, username: userName.value, full_name: fullName.value, email: email.value, institution: institution.value, trusted: Number(trusted.value), password: password.value, disabled: false }
     // log message if response code is 400
-    await api.post('/user', user)
+    await api.post('/user/', user)
 
     successNotification(`Added user ${userName.value}.`)
     emit('user_changed')

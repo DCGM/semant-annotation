@@ -69,7 +69,7 @@ const logInDialog = ref(false)
 
 async function signOut () {
   userStore.signOut()
-  router.push('/login/')
+  router.push('/login')
 }
 
 </script>

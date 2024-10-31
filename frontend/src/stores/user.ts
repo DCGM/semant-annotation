@@ -50,7 +50,7 @@ export const useUserStore = defineStore('user', {
 
     async registr_user (user: UserWithPassword) {
       try {
-        await api.post('/user/', user)
+        await api.post('/user', user)
         this.signIn(user.username, user.password)
       } catch (error) {
         useErrorStore().reportError('ERROR', 'Failed to register user.', error)
