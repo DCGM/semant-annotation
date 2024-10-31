@@ -1,6 +1,6 @@
 <template>
   <q-dialog :modelValue="modelValue" @update:model-value="(e) => emit('update:modelValue', e)" @before-show="open"
-    @keydown.stop="dialogKeyhandler" no-shake>
+            @keydown.stop="dialogKeyhandler" no-shake>
     <q-card class="q-pa-lg shadow-1" style="width: 500px; max-width: 80vw;">
       <q-card-section>
         <div class="text-h5">User profile "{{ username }}"</div>
@@ -16,16 +16,16 @@
           </div>
 
           <q-btn v-if="userStore.user?.trusted" unelevated color="primary" size="lg" class="full-width"
-            label="Update user information" type="submit" @click="updateUser" />
+                 label="Update user information" type="submit" @click="updateUser" />
         </q-form>
       </q-card-section>
       <q-separator />
       <q-card-section>
         <q-form @submit="onSubmitPassword" class="q-gutter-md">
           <q-input square filled v-model="password" type="password" label="Password" lazy-rules
-            :rules="[val => val === null || val.length === 0 || val.length >= 8 || 'Password must be at leas 8 characters long.']" />
+                   :rules="[val => val === null || val.length === 0 || val.length >= 8 || 'Password must be at leas 8 characters long.']" />
           <q-input square filled v-model="verifyPassword" type="password" label="Verify password" lazy-rules
-            :rules="[val => password === null || password.length < 8 || val === password || 'Does not match the selected password.']" />
+                   :rules="[val => password === null || password.length < 8 || val === password || 'Does not match the selected password.']" />
           <q-btn label="Change Password" type="submit" unelevated color="primary" size="lg" class="full-width" />
         </q-form>
       </q-card-section>
@@ -83,7 +83,7 @@ async function updateUser () {
       disabled: disabled.value
     }
     console.log(user)
-    await api.put('/user/', user)
+    await api.put('/user', user)
     await userStore.testAuthentication()
     Notify.create({
       message: 'User information successfully updated',

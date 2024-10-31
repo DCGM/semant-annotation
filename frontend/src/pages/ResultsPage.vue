@@ -195,7 +195,7 @@ async function loadTasks () {
 async function loadUsers () {
   try {
     Loading.show({ delay: 300 });
-    users.value = await api.get('/user/').then((res) => res.data);
+    users.value = await api.get('/user').then((res) => res.data);
   } catch (error) {
     errorStore.reportError('Error', 'Failed to get users.', error);
   } finally {
