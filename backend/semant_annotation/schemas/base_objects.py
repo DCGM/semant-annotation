@@ -106,8 +106,8 @@ class AnnotationTaskInstance(AnnotationTaskInstanceUpdate):
 class SimplifiedAnnotationTaskResult(BaseModel):
     start_time: datetime
     end_time: datetime
-    result_type: AnnotationResultType
     user_id: UUID
+    subtasks: List[AnnotationSubtask] = []
 
     class Config:
         from_attributes = True
@@ -133,6 +133,8 @@ class AnnotationTaskResult(AnnotationTaskResultUpdate):
 
 class AnnotationTaskResultQuery(BaseModel):
     annotation_task_id: UUID
+    page: int
+    page_size: int 
     from_date: date = None
     to_date: date = None
     user_id: UUID = None
