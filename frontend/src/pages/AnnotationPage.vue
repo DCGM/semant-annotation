@@ -78,7 +78,7 @@ const textReponseCount = 10
 const annotationTask = ref<AnnotationTask | null>(null)
 const taskInstance = ref<AnnotationTaskInstance | null>(null)
 
-const subtaskResponsesRefs = ref<SubtaskResponse[]>([])
+const subtaskResponsesRefs = ref<SubtaskResponses[]>([])
 
 let startTime = new Date().toISOString()
 

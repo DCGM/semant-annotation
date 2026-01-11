@@ -27,6 +27,15 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    name: 'correct_task',
+    path: '/correction_tasks/:task_id',
+    component: () => import('src/layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/pages/CorrectionAnnotationPage.vue') },
+    ],
+    meta: { requiresAuth: true },
+  },
+  {
     name: 'annotation_results',
     path: '/annotation_results/',
     component: () => import('src/layouts/MainLayout.vue'),

@@ -52,7 +52,6 @@ async def update_obj(db: AsyncSession, obj: model.Base, table: model.Base):
             data = obj.model_dump(exclude={'id'})
             # add last_change with current timestamp
             data['last_change'] = datetime.datetime.utcnow()
-
             stm = (update(table).where(table.id == obj.id).values(data))
             await db.execute(stm)
     except exc.SQLAlchemyError as e:

@@ -62,6 +62,7 @@ class AnnotationTask(Base):
     created_date: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     last_change: Mapped[datetime.datetime] = mapped_column(default=datetime.datetime.utcnow, index=True, nullable=False)
     active: Mapped[bool] = mapped_column(default=False, nullable=False)
+    correction: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     subtasks: Mapped[List['AnnotationSubtask']] = relationship( viewonly=True, lazy='joined')
 

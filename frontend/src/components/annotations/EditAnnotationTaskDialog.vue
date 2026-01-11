@@ -12,6 +12,7 @@
           <!-- type can be -->
           <q-editor class="q-mt-md" v-model="localTask.description" :toolbar="editorToolbarOptions" :fonts="editorFonts" />
           <q-toggle v-model="localTask.active" label="Is active" />
+          <q-toggle v-model="localTask.correction" label="Is corrected" />
 
           <q-btn unelevated color="primary" size="lg" class="full-width q-mt-md" label="Update task" type="submit"
             :disable="disable" />
@@ -113,7 +114,8 @@ async function onSubmit () {
       id: localTask.value.id,
       name: localTask.value.name,
       description: localTask.value.description,
-      active: localTask.value.active
+      active: localTask.value.active,
+      correction: localTask.value.correction
     }
     await api.put('/task/task', taskUpdate)
     successNotification(`Updated annotation task: ${localTask.value}.`)
